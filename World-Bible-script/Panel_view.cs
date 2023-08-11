@@ -57,7 +57,7 @@ public class Panel_view : MonoBehaviour {
     public void Close()
     {
         this.close_button_view_p();
-        GameObject.Find("Bible").GetComponent<Bible>().check_click_show_ads();
+        GameObject.Find("Bible").GetComponent<Bible>().carrot.ads.show_ads_Interstitial();
         this.check_and_stop_audio();
         GameObject.Find("Bible").GetComponent<Bible>().Sound_Click.Play();
         this.gameObject.SetActive(false);

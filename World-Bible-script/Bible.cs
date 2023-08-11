@@ -35,37 +35,16 @@ public class Bible : MonoBehaviour {
     public Panel_view_quote panel_view_quocte;
 
     [Header("Ads")]
-    public string ads_id_app_vungle;
-    public string ads_id_trunggiang_vungle;
     float timer_ads= 400.0f;
-#pragma warning disable 0649
-    string gameId = "3222624";
-#pragma warning restore 0649
-    private int count_click_ads = 0;
 
     void Start () {
         this.carrot.Load_Carrot(this.check_app_exit);
-        this.carrot.shop.onCarrotPaySuccess = this.onBuySuccessCarrotPay;
-        this.carrot.shop.onCarrotRestoreSuccess = this.onRestoreSuccessCarrotPay;
         this.panel_view.gameObject.SetActive(false);
         this.panel_view_quocte.gameObject.SetActive(false);
         this.panel_setting.SetActive(false);
     }
-    private void load_ads(){
-        if (PlayerPrefs.GetInt("is_buy_ads", 0) == 0)
-        {
-#if UNITY_WSA
-            Vungle.init(this.ads_id_app_vungle);
-            Vungle.loadAd(this.ads_id_trunggiang_vungle);
-#else
-            if (Advertisement.isSupported) Advertisement.Initialize(gameId,false);
-#endif
-        }
-        this.check_ads();
-    }
 
     public void load_app_online(){
-        this.load_ads();
         if (PlayerPrefs.GetString("lang", "") == "")
         {
             this.carrot.show_list_lang(this.act_load);
@@ -81,21 +60,8 @@ public class Bible : MonoBehaviour {
 
     public void load_app_offline(){
         this.GetComponent<Book_offline>().show_list_offline_in_home();
-        this.check_ads();
         this.txt_p_of_day.text =PlayerPrefs.GetString("p_of_day","...");
         this.txt_title_to_day.text=PlayerPrefs.GetString("offline_title","You are using the application in offline mode, the main functions will be displayed when the application is connected to the network");
-    }
-
-    private void check_ads(){
-        this.btn_removeads.SetActive(false);
-        this.panel_setting_removeads.SetActive(false);
-        if (PlayerPrefs.GetInt("is_buy_ads", 0) == 0)
-        {
-            if(this.carrot.is_online()){
-                this.btn_removeads.SetActive(true);
-                this.panel_setting_removeads.SetActive(true);
-            }
-        }
     }
 
     private void act_load(string s_data){
@@ -127,32 +93,14 @@ public class Bible : MonoBehaviour {
 
     private void ShowAd()
     {
-        if (PlayerPrefs.GetInt("is_buy_ads", 0) == 0)
+
+        if (timer_ads <= 0)
         {
-           if (timer_ads <= 0)
-            {
-                Advertisement.Show();
-                timer_ads = 300.0f;
-           }
+            this.carrot.ads.show_ads_Interstitial();
+            timer_ads = 300.0f;
         }
     }
 
-    public void check_click_show_ads()
-    {
-        if (PlayerPrefs.GetInt("is_buy_ads", 0) == 0)
-        {
-            this.count_click_ads++;
-            if (this.count_click_ads >= 16)
-            {
-#if UNITY_WSA
-                Vungle.playAd(this.ads_id_trunggiang_vungle);
-#else
-                if(Advertisement.IsReady())Advertisement.Show("video");
-#endif
-                this.count_click_ads = 0;
-            }
-        }
-    }
 
 	public void show_list_country(){
         this.Sound_Click.Play();
@@ -170,8 +118,7 @@ public class Bible : MonoBehaviour {
 
     public void show_list_book()
     {
-        WWWForm frm_book=this.carrot.frm_act("load_book");
-        this.carrot.send(frm_book,Load_list_book);
+        //this.carrot.send(frm_book,Load_list_book);
     }
 
     private void Load_list_book(string s_data)
@@ -223,10 +170,8 @@ public class Bible : MonoBehaviour {
 
     public void show_search()
     {
-        this.check_click_show_ads();
         this.Sound_Click.Play();
-        WWWForm frm_search = this.carrot.frm_act("search_book");
-        this.carrot.show_search(frm_search,act_search,PlayerPrefs.GetString("search_tip","You can search for any biblical content here!"));
+        this.carrot.show_search(act_search,PlayerPrefs.GetString("search_tip","You can search for any biblical content here!"));
     }
 
     public void show_list_book1()
@@ -267,8 +212,8 @@ public class Bible : MonoBehaviour {
 
     public void show_list_chapter(int num_chap,int type,string name_book,string id_book)
     {
-        this.check_click_show_ads();
-        Sprite icon_book = null;
+        this.carrot.ads.show_ads_Interstitial();
+        Sprite icon_book;
         if (type == 1)
         {
         this.panel_view.Show(PlayerPrefs.GetString("book_1")+" - "+name_book, this.icon_book1);
@@ -312,11 +257,11 @@ public class Bible : MonoBehaviour {
         this.cur_show_p_name_book=name_book;
         this.cur_show_p_chap=chap;
         this.cur_show_num_chap=num_chap;
-        this.check_click_show_ads();
+        this.carrot.ads.show_ads_Interstitial();
         WWWForm frm = this.carrot.frm_act("read_book");
         frm.AddField("id_book", id_book);
         frm.AddField("id_chapter", chap);
-        this.carrot.send(frm,act_get_list_p);
+        //this.carrot.send(frm,act_get_list_p);
     }
 
     private Item_image_p p_img_temp;
@@ -371,7 +316,7 @@ public class Bible : MonoBehaviour {
     }
 
     private void act_set_img_chap(Texture2D data_img){
-        this.p_img_temp.img.sprite = this.carrot.Texture2DtoSprite(data_img);
+        this.p_img_temp.img.sprite = this.carrot.get_tool().Texture2DtoSprite(data_img);
         this.panel_view.set_img_chap(data_img.EncodeToPNG(),this.p_img_temp.img);
     }
 
@@ -387,47 +332,6 @@ public class Bible : MonoBehaviour {
         this.carrot.show_share();
     }
 
-    public void buy_product(int index){
-        this.carrot.show_loading();
-        this.Sound_Click.Play();
-        this.carrot.buy_product(index);
-    }
-
-
-    public void buy_success(Product product)
-    {
-        this.onBuySuccessCarrotPay(product.definition.id);
-    }
-
-    private void onBuySuccessCarrotPay(string id_product)
-    {
-        if (id_product == this.carrot.shop.get_id_by_index(0))
-        {
-            this.carrot.show_msg(PlayerPrefs.GetString("remove_ads", "remove_ads"), PlayerPrefs.GetString("buy_success", "buy_success"), Carrot.Msg_Icon.Success);
-            this.act_inapp_removeAds();
-        }
-    }
-
-    private void onRestoreSuccessCarrotPay(string[] arr_id)
-    {
-        for(int i = 0; i < arr_id.Length; i++)
-        {
-            string s_id_product = arr_id[i];
-            if (s_id_product == this.carrot.shop.get_id_by_index(0)) this.act_inapp_removeAds();
-        }
-    }
-
-    private void act_inapp_removeAds()
-    {
-        PlayerPrefs.SetInt("is_buy_ads", 1);
-        this.check_ads();
-    }
-
-    public void restore_product(){
-        this.Sound_Click.Play();
-        this.carrot.restore_product();
-    }
-
     public void View_quote_home_item1()
     {
         string s_id_p=PlayerPrefs.GetString("p_of_day_id");
@@ -440,11 +344,14 @@ public class Bible : MonoBehaviour {
         IDictionary data = (IDictionary)Carrot.Json.Deserialize(s_data);
         IList all_item = (IList)data["list_data"];
         this.panel_view.style_nomal();
-        this.carrot.show_list_box(this.carrot.inp_search.text,this.icon_search);
-        for(int i = 0; i < all_item.Count; i++){
+ 
+        Carrot.Carrot_Box box_list = this.carrot.Create_Box();
+        box_list.set_icon(this.icon_search);
+        box_list.set_title("Search return");
+        for (int i = 0; i < all_item.Count; i++){
             IDictionary book = (IDictionary)all_item[i];
             GameObject item_book = Instantiate(this.panel_view.prefab_item_view);
-            item_book.transform.SetParent(this.carrot.area_body_box);
+            //item_book.transform.SetParent(this.carrot.area_body_box);
             item_book.transform.localPosition = new Vector3(item_book.transform.localPosition.x, item_book.transform.localPosition.y, 0f);
             item_book.transform.localScale = new Vector3(1f, 1f, 1f);
             item_book.GetComponent<Item_view>().txt_name.text = book["name"].ToString();
@@ -467,7 +374,7 @@ public class Bible : MonoBehaviour {
         {
             IDictionary p = (IDictionary)all_p[i];
             GameObject item_p = Instantiate(this.panel_view.prefab_item_view);
-            item_p.transform.SetParent(this.carrot.area_body_box);
+            //item_p.transform.SetParent(this.carrot.area_body_box);
             item_p.transform.localPosition = new Vector3(item_p.transform.localPosition.x, item_p.transform.localPosition.y, 0f);
             item_p.transform.localScale = new Vector3(1f, 1f, 1f);
             item_p.GetComponent<Item_view>().txt_name.text = p["name"].ToString();

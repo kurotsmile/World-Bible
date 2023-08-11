@@ -68,7 +68,7 @@ public class Panel_view_quote : MonoBehaviour
     public void change_bk()
     {
         WWWForm frm_load_bk=GameObject.Find("Bible").GetComponent<Bible>().carrot.frm_act("get_image_bk");
-        GameObject.Find("Bible").GetComponent<Bible>().carrot.send(frm_load_bk,get_image_handle);
+        //GameObject.Find("Bible").GetComponent<Bible>().carrot.send(frm_load_bk,get_image_handle);
     }
     private void get_image_handle(string s_data)
     {
@@ -81,8 +81,8 @@ public class Panel_view_quote : MonoBehaviour
     }
 
     public void btn_share(){
-        string url_share=GameObject.Find("Bible").GetComponent<Bible>().carrot.get_url_host()+"/b/"+this.id_chap_share+"/"+this.lang_chap_share;
-        GameObject.Find("Bible").GetComponent<Bible>().carrot.show_share(url_share,PlayerPrefs.GetString("app_title", "Bible"));
+        //string url_share=GameObject.Find("Bible").GetComponent<Bible>().carrot.get_url_host()+"/b/"+this.id_chap_share+"/"+this.lang_chap_share;
+        //GameObject.Find("Bible").GetComponent<Bible>().carrot.show_share(url_share,PlayerPrefs.GetString("app_title", "Bible"));
     }
 
 }

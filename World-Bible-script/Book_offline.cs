@@ -24,7 +24,7 @@ public class Book_offline : MonoBehaviour
 
         if (data_img!=null)
         {
-            this.GetComponent<Bible>().carrot.save_file("book_offline_"+this.length+".png", data_img);
+            this.GetComponent<Bible>().carrot.get_tool().save_file("book_offline_"+this.length+".png", data_img);
         }
 
         if (data_audio!=null)
@@ -84,7 +84,7 @@ public class Book_offline : MonoBehaviour
         item_image.transform.SetParent(this.GetComponent<Bible>().panel_view.area_body);
         item_image.transform.localPosition = new Vector3(item_image.transform.localPosition.x, item_image.transform.localPosition.y, 0f);
         item_image.transform.localScale = new Vector3(1f, 1f, 1f);
-        this.GetComponent<Bible>().carrot.load_file_img("book_offline_" + index + ".png",item_image.GetComponent<Item_image_p>().img);
+        this.GetComponent<Bible>().carrot.get_tool().load_file_img("book_offline_" + index + ".png",item_image.GetComponent<Item_image_p>().img);
 
         for (int i = 0; i < PlayerPrefs.GetInt("book_offline_p_count" +index); i++)
         {

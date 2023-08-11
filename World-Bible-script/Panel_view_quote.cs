@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Panel_view_quote : MonoBehaviour
@@ -43,14 +40,12 @@ public class Panel_view_quote : MonoBehaviour
         this.set_skybox_Texture(img.mainTexture);
     }
 
-
     public void close()
     {
         this.StopAllCoroutines();
         GameObject.Find("Bible").GetComponent<Bible>().panel_main.SetActive(true);
         this.gameObject.SetActive(false);
         GameObject.Find("Bible").GetComponent<Bible>().Sound_Click.Play();
-
     }
 
     public void set_skybox_Texture(Texture textT)

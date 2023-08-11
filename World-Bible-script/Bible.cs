@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Firebase.Extensions;
+using Firebase.Firestore;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine.Advertisements;
-using UnityEngine.Purchasing;
 
 public class Bible : MonoBehaviour {
 
@@ -118,7 +116,22 @@ public class Bible : MonoBehaviour {
 
     public void show_list_book()
     {
-        //this.carrot.send(frm_book,Load_list_book);
+        Query queryBible=this.carrot.db.Collection("bible");
+        queryBible.GetSnapshotAsync().ContinueWithOnMainThread(task=>
+        {
+            QuerySnapshot docs=task.Result;
+
+            if (task.IsCompleted)
+            {
+
+            }
+
+            if (task.IsFaulted)
+            {
+                this.carrot.show_msg("Bible", "Unknown task error, please try again next time!", Carrot.Msg_Icon.Error);
+            }
+
+        });
     }
 
     private void Load_list_book(string s_data)
@@ -180,15 +193,15 @@ public class Bible : MonoBehaviour {
         this.panel_view.style_nomal();
         for (int i = 0; i < this.arr_item_book1.Length; i++)
         {
-        GameObject item_view = Instantiate(this.panel_view.prefab_item_view);
-        item_view.transform.SetParent(this.panel_view.area_body);
-        item_view.transform.localPosition = new Vector3(item_view.transform.localPosition.x, item_view.transform.localPosition.y, 0f);
-        item_view.transform.localScale = new Vector3(1f, 1f, 1f);
-        item_view.GetComponent<Item_view>().id_book = this.arr_item_book1[i].id_book;
-        item_view.GetComponent<Item_view>().txt_name.text = this.arr_item_book1[i].txt_name.text;
-        item_view.GetComponent<Item_view>().icon.sprite= this.arr_item_book1[i].icon.sprite;
-        item_view.GetComponent<Item_view>().chapter = this.arr_item_book1[i].chapter;
-        item_view.GetComponent<Item_view>().type =1;
+            GameObject item_view = Instantiate(this.panel_view.prefab_item_view);
+            item_view.transform.SetParent(this.panel_view.area_body);
+            item_view.transform.localPosition = new Vector3(item_view.transform.localPosition.x, item_view.transform.localPosition.y, 0f);
+            item_view.transform.localScale = new Vector3(1f, 1f, 1f);
+            item_view.GetComponent<Item_view>().id_book = this.arr_item_book1[i].id_book;
+            item_view.GetComponent<Item_view>().txt_name.text = this.arr_item_book1[i].txt_name.text;
+            item_view.GetComponent<Item_view>().icon.sprite = this.arr_item_book1[i].icon.sprite;
+            item_view.GetComponent<Item_view>().chapter = this.arr_item_book1[i].chapter;
+            item_view.GetComponent<Item_view>().type = 1;
         }
     }
 

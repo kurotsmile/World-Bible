@@ -3165,12 +3165,24 @@ PrefabInstance:
       value: app_mobile/bible/app_ver3.php
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
+      propertyPath: id_ads_Banner_android
+      value: ca-app-pub-5388516931803092/4249162461
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: index_inapp_remove_ads
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
+      propertyPath: id_ads_Rewarded_android
+      value: ca-app-pub-5388516931803092/3905547531
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: index_inapp_buy_bk_music
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
+      propertyPath: id_ads_Interstitial_android
+      value: ca-app-pub-5388516931803092/5086767269
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424379, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: m_RootOrder
@@ -8354,6 +8366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1544314735}
   - component: {fileID: 1544314736}
+  - component: {fileID: 1544314739}
   - component: {fileID: 1544314737}
   - component: {fileID: 1544314738}
   m_Layer: 0
@@ -8391,20 +8404,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carrot: {fileID: 521575782}
-  panel_main: {fileID: 804466553}
+  book: {fileID: 1544314739}
   tr_all_item_book: {fileID: 919562589}
   prefab_book_item: {fileID: 346399769378897854, guid: 5c76e0e7f1ec6f749989da9d070de244, type: 3}
   prefab_loading_item: {fileID: 5468248173947337401, guid: 645ac0cb8d7bef84193ef40e8114c9c3, type: 3}
-  img_bk_home_item1: {fileID: 1656469255}
-  txt_title_to_day: {fileID: 546821140}
-  txt_p_of_day: {fileID: 1157337551}
   icon_book_old_testament: {fileID: 21300000, guid: 99b2b81e143496c4d8a3f93355e40459, type: 3}
   icon_book_new_Testament: {fileID: 21300000, guid: c5c39d8756a667843914d2d1d71b4411, type: 3}
   icon_book_save: {fileID: 21300000, guid: da93aeaac1b2ebf4e97ff43ae79e47cc, type: 3}
-  icon_p: {fileID: 21300000, guid: c5c39d8756a667843914d2d1d71b4411, type: 3}
+  icon_chapter: {fileID: 21300000, guid: 902ad0b40f8636b4faac2869280edda7, type: 3}
+  icon_paragraph: {fileID: 21300000, guid: 15dee0308a57e4140a9fe434227ce330, type: 3}
   icon_search: {fileID: 21300000, guid: e185f71bd1cc76747a92e664dac2a0db, type: 3}
   btn_removeads: {fileID: 1785696228}
-  Sound_Click: {fileID: 847478304}
+  sound_click_clip: {fileID: 8300000, guid: 0459c777a820feb4d93bea3c12782754, type: 3}
 --- !u!114 &1544314737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8488,6 +8499,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1544314739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544314734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ef2a17de7cae304eb0003ab1b7bd8b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bible: {fileID: 1544314736}
 --- !u!1 &1589868892
 GameObject:
   m_ObjectHideFlags: 0

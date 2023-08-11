@@ -2,39 +2,34 @@
 using Firebase.Firestore;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Bible : MonoBehaviour {
 
     [Header("Obj Main")]
     public Carrot.Carrot carrot;
+    public Manager_Book book;
 
     [Header("Obj Bible")]
-    public GameObject panel_main;
-
     public Transform tr_all_item_book;
     public GameObject prefab_book_item;
     public GameObject prefab_loading_item;
 
-    public Image img_bk_home_item1;
-    public Text txt_title_to_day;
-    public Text txt_p_of_day;
-
     public Sprite icon_book_old_testament;
     public Sprite icon_book_new_Testament;
     public Sprite icon_book_save;
-    public Sprite icon_p;
+    public Sprite icon_chapter;
+    public Sprite icon_paragraph;
     public Sprite icon_search;
 
     public GameObject btn_removeads;
-    public AudioSource Sound_Click;
-
+    public AudioClip sound_click_clip;
 
     [Header("Ads")]
     float timer_ads= 400.0f;
 
     void Start () {
         this.carrot.Load_Carrot(this.check_app_exit);
+        this.carrot.change_sound_click(this.sound_click_clip);
     }
 
     public void load_app_online(){
@@ -42,14 +37,11 @@ public class Bible : MonoBehaviour {
             this.carrot.show_list_lang(this.act_load);
         else
             this.show_list_book();
-        
-        this.txt_title_to_day.text=PlayerPrefs.GetString("quote_of_day","Bible verses of the day");
     }
 
 
     public void load_app_offline(){
-        this.txt_p_of_day.text =PlayerPrefs.GetString("p_of_day","...");
-        this.txt_title_to_day.text=PlayerPrefs.GetString("offline_title","You are using the application in offline mode, the main functions will be displayed when the application is connected to the network");
+
     }
 
     private void act_load(string s_data){
@@ -76,20 +68,9 @@ public class Bible : MonoBehaviour {
         }
     }
 
-
 	public void show_list_country(){
-        this.Sound_Click.Play();
         this.carrot.show_list_lang(this.act_load);
 	}
-
-    [ContextMenu ("Delete All data")]
-    public void delete_all_data()
-    {
-        PlayerPrefs.DeleteAll();
-        this.carrot.delete_all_data();
-        this.Sound_Click.Play();
-        this.Start();
-    }
 
     public void show_list_book()
     {
@@ -105,7 +86,8 @@ public class Bible : MonoBehaviour {
                 foreach(DocumentSnapshot doc in task.Result.Documents)
                 {
                     IDictionary data = doc.ToDictionary();
-
+                    data["id"] = doc.Id;
+                    var id_ebook = doc.Id;
                     if (data["contents"] != null) data.Remove("contents");
                     Carrot.Carrot_Box_Item item_book = this.create_item();
                     if (data["name"] != null)
@@ -128,7 +110,7 @@ public class Bible : MonoBehaviour {
                     btn_save.set_icon_color(Color.white);
                     btn_save.set_color(this.carrot.color_highlight);
 
-                    item_book.set_act(() => this.view_book(data));
+                    item_book.set_act(() => this.book.view(id_ebook));
                 }
             }
 
@@ -163,32 +145,23 @@ public class Bible : MonoBehaviour {
         obj_loading.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
-    private void view_book(IDictionary data)
-    {
-
-    }
-
     public void show_search()
     {
-        this.Sound_Click.Play();
+        this.carrot.ads.show_ads_Interstitial();
         this.carrot.show_search(null,PlayerPrefs.GetString("search_tip","You can search for any biblical content here!"));
     }
 
     public void rate_app()
     {
-        this.Sound_Click.Play();
         this.carrot.show_rate();
     }
 
     public void app_share()
     {
-        this.Sound_Click.Play();
         this.carrot.show_share();
     }
 
-
     public void show_list_app_other(){
-        this.Sound_Click.Play();
         this.carrot.show_list_carrot_app();
     }
 

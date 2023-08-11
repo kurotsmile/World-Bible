@@ -5784,7 +5784,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -8408,9 +8408,11 @@ MonoBehaviour:
   tr_all_item_book: {fileID: 919562589}
   prefab_book_item: {fileID: 346399769378897854, guid: 5c76e0e7f1ec6f749989da9d070de244, type: 3}
   prefab_loading_item: {fileID: 5468248173947337401, guid: 645ac0cb8d7bef84193ef40e8114c9c3, type: 3}
+  prefab_paragraph_item: {fileID: 7112379093374360891, guid: 082f00b36bdafae41a989749ad2f548c, type: 3}
   icon_book_old_testament: {fileID: 21300000, guid: 99b2b81e143496c4d8a3f93355e40459, type: 3}
   icon_book_new_Testament: {fileID: 21300000, guid: c5c39d8756a667843914d2d1d71b4411, type: 3}
   icon_book_save: {fileID: 21300000, guid: da93aeaac1b2ebf4e97ff43ae79e47cc, type: 3}
+  icon_book_open: {fileID: 21300000, guid: 874165923736292459095d4d16297dde, type: 3}
   icon_chapter: {fileID: 21300000, guid: 902ad0b40f8636b4faac2869280edda7, type: 3}
   icon_paragraph: {fileID: 21300000, guid: 15dee0308a57e4140a9fe434227ce330, type: 3}
   icon_search: {fileID: 21300000, guid: e185f71bd1cc76747a92e664dac2a0db, type: 3}

@@ -13,10 +13,12 @@ public class Bible : MonoBehaviour {
     public Transform tr_all_item_book;
     public GameObject prefab_book_item;
     public GameObject prefab_loading_item;
+    public GameObject prefab_paragraph_item;
 
     public Sprite icon_book_old_testament;
     public Sprite icon_book_new_Testament;
     public Sprite icon_book_save;
+    public Sprite icon_book_open;
     public Sprite icon_chapter;
     public Sprite icon_paragraph;
     public Sprite icon_search;

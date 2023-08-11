@@ -9,7 +9,6 @@ public class Bible : MonoBehaviour {
     public Carrot.Carrot carrot;
     public GameObject panel_main;
     public Panel_view panel_view;
-    public GameObject panel_setting;
     public Transform area_main_body_contain;
     public Transform area_contain_list_book1;
     public Transform area_contain_list_book2;
@@ -24,7 +23,6 @@ public class Bible : MonoBehaviour {
     public Sprite icon_search;
 
     public GameObject btn_removeads;
-    public GameObject panel_setting_removeads;
     public AudioSource Sound_Click;
 
     private Book_home_item[] arr_item_book1;
@@ -39,7 +37,6 @@ public class Bible : MonoBehaviour {
         this.carrot.Load_Carrot(this.check_app_exit);
         this.panel_view.gameObject.SetActive(false);
         this.panel_view_quocte.gameObject.SetActive(false);
-        this.panel_setting.SetActive(false);
     }
 
     public void load_app_online(){
@@ -75,10 +72,6 @@ public class Bible : MonoBehaviour {
         else if (this.panel_view_quocte.gameObject.activeInHierarchy)
         {
             this.panel_view_quocte.btn_close.onClick.Invoke();
-            this.carrot.set_no_check_exit_app();
-        }
-        else if(this.panel_setting.activeInHierarchy){
-            this.close_setting();
             this.carrot.set_no_check_exit_app();
         }
     }
@@ -123,7 +116,12 @@ public class Bible : MonoBehaviour {
 
             if (task.IsCompleted)
             {
+                IList list_bible =(IList) docs.Documents;
 
+                for(int i = 0; i < list_bible.Count; i++)
+                {
+
+                }
             }
 
             if (task.IsFaulted)
@@ -415,12 +413,6 @@ public class Bible : MonoBehaviour {
     }
 
     public void show_setting(){
-        this.Sound_Click.Play();
-        this.panel_setting.SetActive(true);
-    }
-
-    public void close_setting(){
-        this.Sound_Click.Play();
-        this.panel_setting.SetActive(false);
+        this.carrot.Create_Setting();
     }
 }

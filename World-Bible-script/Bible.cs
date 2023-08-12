@@ -28,6 +28,7 @@ public class Bible : MonoBehaviour {
     public Sprite icon_sad;
     public Sprite icon_next_page;
     public Sprite icon_prev_page;
+    public Sprite icon_copy;
 
     public Color32 color_row_a;
     public Color32 color_row_b;
@@ -85,6 +86,8 @@ public class Bible : MonoBehaviour {
 
     public void show_list_book()
     {
+        if (this.carrot.is_offline()) this.is_ready_cache = true;
+
         if (this.is_ready_cache == false)
         {
             this.get_data_from_sever();

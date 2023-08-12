@@ -152,6 +152,11 @@ public class Manager_Book : MonoBehaviour
             item_p.set_title(s_paragraph);
             item_p.set_tip("sentence "+(i+1).ToString());
             item_p.set_icon(this.bible.icon_paragraph);
+
+            Carrot.Carrot_Box_Btn_Item btn_copy=item_p.create_item();
+            btn_copy.set_icon(this.bible.icon_copy);
+            btn_copy.set_color(this.bible.carrot.color_highlight);
+            btn_copy.set_act(() =>this.show_copy(s_paragraph));
         }
 
         this.nav_page(box_paragraphs);
@@ -293,5 +298,10 @@ public class Manager_Book : MonoBehaviour
             this.view_paragraphs_page(chapter);
         else
             this.view_paragraphs_list(chapter);
+    }
+
+    private void show_copy(string s_text)
+    {
+        this.bible.carrot.show_input(PlayerPrefs.GetString("copy","Copy"), PlayerPrefs.GetString("copy_tip","Copy this bible passage"), s_text);
     }
 }

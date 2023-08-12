@@ -40,16 +40,11 @@ public class Book_Offline : MonoBehaviour
         this.bible.carrot.show_loading();
         this.bible.carrot.db.Collection("bible").Document(id).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-
             DocumentSnapshot book = task.Result;
-
             if (task.IsCompleted)
             {
                 this.bible.carrot.hide_loading();
-                if (book.Exists)
-                {
-                    this.add(book.ToDictionary());
-                }
+                if (book.Exists) this.add(book.ToDictionary());
             }
 
             if (task.IsFaulted)
@@ -65,11 +60,7 @@ public class Book_Offline : MonoBehaviour
         if (this.length > 0)
         {
             this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
-
-            Carrot.Carrot_Box_Item item_title=this.bible.add_title(PlayerPrefs.GetString("save_list", "List of saved books"));
-            item_title.set_icon(this.bible.book.icon_list);
-            item_title.set_tip(PlayerPrefs.GetString("save_list_tip", "You can read these books without an internet connection"));
-
+            this.add_title();
             for (int i = this.length - 1; i >= 0; i--)
             {
                 string s_data_book = PlayerPrefs.GetString("book_" + i, "");
@@ -103,8 +94,16 @@ public class Book_Offline : MonoBehaviour
         }
         else
         {
-            this.bible.add_none();
+            this.add_title();
+            this.bible.add_none(false);
         }
+    }
+
+    private void add_title()
+    {
+        Carrot.Carrot_Box_Item item_title = this.bible.add_title(PlayerPrefs.GetString("save_list", "List of saved books"));
+        item_title.set_icon(this.bible.book.icon_list);
+        item_title.set_tip(PlayerPrefs.GetString("save_list_tip", "You can read these books without an internet connection"));
     }
 
     public void delete(int index)

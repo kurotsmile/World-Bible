@@ -18,6 +18,7 @@ public class Manager_Book : MonoBehaviour
     private IDictionary data_chapter_cur = null;
     private Carrot.Carrot_Box box_paragraphs_view = null;
     private bool type_view_page = false;
+    private int index_show_chapter = -1;
 
     public void view(string id)
     {
@@ -69,8 +70,10 @@ public class Manager_Book : MonoBehaviour
         box_list_chapter.set_title(data["name"].ToString());
 
         IList contents = (IList)data["contents"];
-        foreach (IDictionary chapter in contents)
+        for(int i=0;i<contents.Count;i++)
         {
+            IDictionary chapter = (IDictionary) contents[i];
+            chapter["index"] = i;
             Carrot.Carrot_Box_Item item_chapter = box_list_chapter.create_item();
             item_chapter.set_icon_white(this.bible.icon_chapter);
             if (chapter["name"] != null) item_chapter.set_title(chapter["name"].ToString());
@@ -105,7 +108,7 @@ public class Manager_Book : MonoBehaviour
             {
                 Carrot.Carrot_Button_Item btn_save = panel.create_btn("btn_save");
                 btn_save.set_icon_white(this.bible.offline.icon_offline_book);
-                btn_save.set_label("Save");
+                btn_save.set_label(PlayerPrefs.GetString("save","Save"));
                 btn_save.set_bk_color(this.bible.carrot.color_highlight);
                 btn_save.set_act_click(() => bible.offline.add(data));
             }
@@ -114,7 +117,7 @@ public class Manager_Book : MonoBehaviour
             {
                 Carrot.Carrot_Button_Item btn_del = panel.create_btn("btn_del");
                 btn_del.set_icon_white(this.bible.carrot.sp_icon_del_data);
-                btn_del.set_label("Delete");
+                btn_del.set_label(PlayerPrefs.GetString("del","Delete"));
                 btn_del.set_bk_color(this.bible.carrot.color_highlight);
                 btn_del.set_act_click(() => bible.offline.delete(int.Parse(data["index"].ToString())));
             }
@@ -136,11 +139,11 @@ public class Manager_Book : MonoBehaviour
 
     private void view_paragraphs_list(IDictionary chapter)
     {
+        this.index_show_chapter = int.Parse(chapter["index"].ToString());
         this.type_view_page = false;
         this.data_chapter_cur = chapter;
         this.bible.carrot.play_sound_click();
-        Carrot.Carrot_Box box_paragraphs = this.box_view(this.data_book_cur["name"].ToString());
-
+        Carrot.Carrot_Box box_paragraphs = this.box_view(this.data_book_cur["name"].ToString() + " ("+PlayerPrefs.GetString("chapter", "Chapter") +" "+ (this.index_show_chapter + 1)+")");
         IList paragraphs = (IList)chapter["paragraphs"];
         for (int i = 0; i < paragraphs.Count; i++)
         {
@@ -156,10 +159,11 @@ public class Manager_Book : MonoBehaviour
 
     private void view_paragraphs_page(IDictionary chapter)
     {
+        this.index_show_chapter = int.Parse(chapter["index"].ToString());
         this.type_view_page = true;
         this.data_chapter_cur = chapter;
         this.bible.carrot.play_sound_click();
-        Carrot.Carrot_Box box_paragraphs = this.box_view(this.data_book_cur["name"].ToString());
+        Carrot.Carrot_Box box_paragraphs = this.box_view(this.data_book_cur["name"].ToString()+ " (" + PlayerPrefs.GetString("chapter", "Chapter") + " "+(this.index_show_chapter+1)+ ")");
         IList paragraphs = (IList)chapter["paragraphs"];
         string s_page = "";
         for (int i = 0; i < paragraphs.Count; i++)
@@ -184,13 +188,15 @@ public class Manager_Book : MonoBehaviour
         Carrot.Carrot_Box_Btn_Panel panel = box.create_panel_btn();
         Carrot.Carrot_Button_Item btn_prev = panel.create_btn("btn_prev");
         btn_prev.set_icon(this.bible.icon_prev_page);
-        btn_prev.set_label("Previous");
+        btn_prev.set_label(PlayerPrefs.GetString("prev","Previous"));
         btn_prev.set_bk_color(this.bible.carrot.color_highlight);
+        btn_prev.set_act_click(() => this.prev_page());
 
         Carrot.Carrot_Button_Item btn_next = panel.create_btn("btn_next");
         btn_next.set_icon(this.bible.icon_next_page);
-        btn_next.set_label("Next");
+        btn_next.set_label(PlayerPrefs.GetString("next","Next"));
         btn_next.set_bk_color(this.bible.carrot.color_highlight);
+        btn_next.set_act_click(() => this.nex_page());
     }
 
     private Carrot.Carrot_Box box_view(string s_title)
@@ -265,5 +271,27 @@ public class Manager_Book : MonoBehaviour
     {
         string url_link = this.bible.carrot.mainhost + "/?p=bible&id=" + this.data_book_cur["id"].ToString();
         this.bible.carrot.show_share(url_link, PlayerPrefs.GetString("bible_share", "Share this bible book with everyone!"));
+    }
+
+    private void nex_page()
+    {
+        this.index_show_chapter++;
+        this.show_chapter();
+    }
+
+    private void prev_page()
+    {
+        this.index_show_chapter--;
+        this.show_chapter();
+    }
+
+    private void show_chapter()
+    {
+        IList contents = (IList)this.data_book_cur["contents"];
+        IDictionary chapter = (IDictionary)contents[this.index_show_chapter];
+        if (this.type_view_page)
+            this.view_paragraphs_page(chapter);
+        else
+            this.view_paragraphs_list(chapter);
     }
 }

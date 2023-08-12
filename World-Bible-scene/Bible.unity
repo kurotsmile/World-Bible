@@ -2384,6 +2384,7 @@ GameObject:
   - component: {fileID: 1544314738}
   - component: {fileID: 1544314740}
   - component: {fileID: 1544314741}
+  - component: {fileID: 1544314742}
   m_Layer: 0
   m_Name: Bible
   m_TagString: Untagged
@@ -2422,6 +2423,7 @@ MonoBehaviour:
   book: {fileID: 1544314739}
   offline: {fileID: 1544314740}
   menu: {fileID: 1544314741}
+  search: {fileID: 1544314742}
   tr_all_item_book: {fileID: 919562589}
   prefab_book_item: {fileID: 346399769378897854, guid: 5c76e0e7f1ec6f749989da9d070de244, type: 3}
   prefab_loading_item: {fileID: 5468248173947337401, guid: 645ac0cb8d7bef84193ef40e8114c9c3, type: 3}
@@ -2554,6 +2556,20 @@ MonoBehaviour:
   - {fileID: 2092267522}
   - {fileID: 583309954}
   - {fileID: 50922112}
+--- !u!114 &1544314742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544314734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 348ebb34e7c5a4b4ba13d0c5b105a272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bible: {fileID: 1544314736}
+  icon_search_return: {fileID: 21300000, guid: 9357c6f67a89df2419ec02f2ed954372, type: 3}
 --- !u!1 &1589868892
 GameObject:
   m_ObjectHideFlags: 0

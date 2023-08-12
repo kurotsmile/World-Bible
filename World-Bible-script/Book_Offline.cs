@@ -57,9 +57,9 @@ public class Book_Offline : MonoBehaviour
 
     private void list()
     {
+        this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
         if (this.length > 0)
         {
-            this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
             this.add_title();
             for (int i = this.length - 1; i >= 0; i--)
             {

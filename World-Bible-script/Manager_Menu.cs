@@ -36,5 +36,6 @@ public class Manager_Menu : MonoBehaviour
 
         if (index == 0) this.bible.show_list_book();
         if (index == 1) this.bible.offline.show();
+        if (index == 2) this.bible.search.list();
     }
 }

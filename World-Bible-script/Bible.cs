@@ -11,6 +11,7 @@ public class Bible : MonoBehaviour {
     public Manager_Book book;
     public Book_Offline offline;
     public Manager_Menu menu;
+    public Manager_Search search;
 
     [Header("Obj Bible")]
     public Transform tr_all_item_book;
@@ -253,8 +254,7 @@ public class Bible : MonoBehaviour {
 
     public void show_search()
     {
-        this.carrot.ads.show_ads_Interstitial();
-        this.carrot.show_search(null,PlayerPrefs.GetString("search_tip","You can search for any biblical content here!"));
+        this.search.show_search();
     }
 
     public void app_share()

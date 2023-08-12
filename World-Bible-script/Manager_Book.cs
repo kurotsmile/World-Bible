@@ -177,12 +177,15 @@ public class Manager_Book : MonoBehaviour
     private void nav_page(Carrot.Carrot_Box box)
     {
         Carrot.Carrot_Box_Btn_Panel panel = box.create_panel_btn();
-        Carrot.Carrot_Button_Item btn_next = panel.create_btn("btn_next");
-        btn_next.set_icon(this.bible.icon_next_page);
-        btn_next.set_bk_color(this.bible.carrot.color_highlight);
         Carrot.Carrot_Button_Item btn_prev = panel.create_btn("btn_prev");
         btn_prev.set_icon(this.bible.icon_prev_page);
+        btn_prev.set_label("Previous");
         btn_prev.set_bk_color(this.bible.carrot.color_highlight);
+
+        Carrot.Carrot_Button_Item btn_next = panel.create_btn("btn_next");
+        btn_next.set_icon(this.bible.icon_next_page);
+        btn_next.set_label("Next");
+        btn_next.set_bk_color(this.bible.carrot.color_highlight);
     }
 
     private Carrot.Carrot_Box box_view(string s_title)
@@ -215,5 +218,41 @@ public class Manager_Book : MonoBehaviour
     private void fix_size_paragraph()
     {
         this.textPro.overflowMode = TextOverflowModes.Masking;
+    }
+
+    public void show_list_book_by_data(IList list)
+    {
+        if (this.box_paragraphs_view != null) this.box_paragraphs_view.close();
+        this.box_paragraphs_view = this.bible.carrot.Create_Box();
+        this.box_paragraphs_view.set_icon(this.icon_list);
+
+        for(int i = 0; i < list.Count; i++)
+        {
+            IDictionary data = (IDictionary)list[i];
+            var id_book = data["id"].ToString();
+            Carrot.Carrot_Box_Item item_book = this.item_book(data);
+            item_book.set_act(() => this.view(id_book));
+            this.box_paragraphs_view.add_item(item_book.gameObject);
+        }
+    }
+
+    public Carrot.Carrot_Box_Item item_book(IDictionary data)
+    {
+        Carrot.Carrot_Box_Item item_book = this.bible.create_item();
+        if (data["name"] != null)
+        {
+            item_book.set_title(data["name"].ToString());
+            item_book.set_tip(data["type"].ToString());
+        }
+
+        if (data["type"] != null)
+        {
+            string s_type_book = data["type"].ToString();
+            if (s_type_book == "old_testament")
+                item_book.set_icon_white(this.bible.icon_book_old_testament);
+            else
+                item_book.set_icon_white(this.bible.icon_book_new_Testament);
+        }
+        return item_book;
     }
 }

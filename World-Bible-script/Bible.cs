@@ -101,18 +101,10 @@ public class Bible : MonoBehaviour {
                     item_Bible_Old.set_icon_white(this.icon_book_old_testament);
                     item_Bible_Old.set_tip("Old testament");
 
-                    Carrot.Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
-                    btn_list_old.set_icon(this.book.icon_list);
-                    Destroy(btn_list_old.GetComponent<Button>());
-
                     IList list_book_New_testament = (IList)Carrot.Json.Deserialize("[]");
                     Carrot.Carrot_Box_Item item_Bible_New = this.add_title("New Testament");
                     item_Bible_New.set_icon_white(this.icon_book_new_Testament);
                     item_Bible_New.set_tip("New Testament");
-
-                    Carrot.Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
-                    btn_list_new.set_icon(this.book.icon_list);
-                    Destroy(btn_list_new.GetComponent<Button>());
 
                     int index_item = 0;
                     foreach (DocumentSnapshot doc in task.Result.Documents)
@@ -121,27 +113,22 @@ public class Bible : MonoBehaviour {
                         data["id"] = doc.Id;
                         var id_book = doc.Id;
                         if (data["contents"] != null) data.Remove("contents");
-                        Carrot.Carrot_Box_Item item_book = this.create_item();
-                        if (data["name"] != null)
-                        {
-                            item_book.set_title(data["name"].ToString());
-                            item_book.set_tip(data["type"].ToString());
-                        }
+                        Carrot.Carrot_Box_Item item_book = this.book.item_book(data);
+                        item_book.set_act(() => this.book.view(id_book));
 
                         if (data["type"] != null)
                         {
                             string s_type_book = data["type"].ToString();
                             if (s_type_book == "old_testament")
-                            {
                                 list_book_Old_testament.Add(data);
-                                item_book.set_icon_white(this.icon_book_old_testament);
-                            }
                             else
-                            {
                                 list_book_New_testament.Add(data);
-                                item_book.set_icon_white(this.icon_book_new_Testament);
-                            }
                         }
+
+                        if (index_item % 2 == 0)
+                            item_book.gameObject.GetComponent<Image>().color = this.color_row_a;
+                        else
+                            item_book.gameObject.GetComponent<Image>().color = this.color_row_b;
 
                         Carrot.Carrot_Box_Btn_Item btn_save = item_book.create_item();
                         btn_save.set_icon(this.icon_book_save);
@@ -149,17 +136,20 @@ public class Bible : MonoBehaviour {
                         btn_save.set_color(this.carrot.color_highlight);
                         btn_save.set_act(() => this.offline.get_and_save(id_book));
 
-                        item_book.set_act(() => this.book.view(id_book));
-
-                        if (index_item % 2 == 0)
-                            item_book.gameObject.GetComponent<Image>().color = this.color_row_a;
-                        else
-                            item_book.gameObject.GetComponent<Image>().color = this.color_row_b;
-
-                        item_Bible_Old.set_tip(list_book_Old_testament.Count + " Book");
-                        item_Bible_New.set_tip(list_book_New_testament.Count + " Book");
                         index_item++;
                     }
+
+                    item_Bible_Old.set_tip(list_book_Old_testament.Count + " Book");
+                    Carrot.Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
+                    btn_list_old.set_icon(this.book.icon_list);
+                    Destroy(btn_list_old.GetComponent<Button>());
+                    item_Bible_Old.set_act(() => book.show_list_book_by_data(list_book_Old_testament));
+
+                    item_Bible_New.set_tip(list_book_New_testament.Count + " Book");
+                    Carrot.Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
+                    btn_list_new.set_icon(this.book.icon_list);
+                    Destroy(btn_list_new.GetComponent<Button>());
+                    item_Bible_New.set_act(() => book.show_list_book_by_data(list_book_New_testament));
                 }
                 else
                 {

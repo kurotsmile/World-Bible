@@ -44,7 +44,7 @@ public class Manager_Book : MonoBehaviour
             if (task.IsFaulted)
             {
                 this.bible.carrot.hide_loading();
-                this.bible.carrot.show_msg("Bible", "Operation error, please try again next time!", Carrot.Msg_Icon.Error);
+                this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown","Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
             }
         });
     }
@@ -264,6 +264,6 @@ public class Manager_Book : MonoBehaviour
     private void share()
     {
         string url_link = this.bible.carrot.mainhost + "/?p=bible&id=" + this.data_book_cur["id"].ToString();
-        this.bible.carrot.show_share(url_link, "Share this bible book with everyone!");
+        this.bible.carrot.show_share(url_link, PlayerPrefs.GetString("bible_share", "Share this bible book with everyone!"));
     }
 }

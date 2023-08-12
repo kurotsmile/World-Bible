@@ -97,12 +97,12 @@ public class Bible : MonoBehaviour {
                     this.carrot.clear_contain(this.tr_all_item_book);
 
                     IList list_book_Old_testament = (IList)Carrot.Json.Deserialize("[]");
-                    Carrot.Carrot_Box_Item item_Bible_Old = this.add_title("Old testament");
+                    Carrot.Carrot_Box_Item item_Bible_Old = this.add_title(PlayerPrefs.GetString("old_testament", "Old testament"));
                     item_Bible_Old.set_icon_white(this.icon_book_old_testament);
                     item_Bible_Old.set_tip("Old testament");
 
                     IList list_book_New_testament = (IList)Carrot.Json.Deserialize("[]");
-                    Carrot.Carrot_Box_Item item_Bible_New = this.add_title("New Testament");
+                    Carrot.Carrot_Box_Item item_Bible_New = this.add_title(PlayerPrefs.GetString("new_testament", "New Testament"));
                     item_Bible_New.set_icon_white(this.icon_book_new_Testament);
                     item_Bible_New.set_tip("New Testament");
 
@@ -141,13 +141,13 @@ public class Bible : MonoBehaviour {
                         index_item++;
                     }
 
-                    item_Bible_Old.set_tip(list_book_Old_testament.Count + " Book");
+                    item_Bible_Old.set_tip(list_book_Old_testament.Count + " "+PlayerPrefs.GetString("book","Book"));
                     Carrot.Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
                     btn_list_old.set_icon(this.book.icon_list);
                     Destroy(btn_list_old.GetComponent<Button>());
                     item_Bible_Old.set_act(() => book.show_list_book_by_type("old_testament"));
 
-                    item_Bible_New.set_tip(list_book_New_testament.Count + " Book");
+                    item_Bible_New.set_tip(list_book_New_testament.Count + " "+ PlayerPrefs.GetString("book", "Book"));
                     Carrot.Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
                     btn_list_new.set_icon(this.book.icon_list);
                     Destroy(btn_list_new.GetComponent<Button>());
@@ -162,7 +162,7 @@ public class Bible : MonoBehaviour {
             if (task.IsFaulted)
             {
                 this.add_none();
-                this.carrot.show_msg("Bible", "Unknown task error, please try again next time!", Carrot.Msg_Icon.Error);
+                this.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
             }
         });
     }
@@ -198,6 +198,8 @@ public class Bible : MonoBehaviour {
         item_none.set_icon(this.icon_sad);
         item_none.set_title("List is empty");
         item_none.set_tip("There are no items on this list yet!");
+        item_none.set_lang_data("list_none", "list_none_tip");
+        item_none.load_lang_data();
         item_none.GetComponent<Image>().color = this.carrot.color_highlight;
     }
 

@@ -26,7 +26,7 @@ public class Book_Offline : MonoBehaviour
         PlayerPrefs.SetString("book_" + this.length, Carrot.Json.Serialize(data));
         this.length++;
         PlayerPrefs.SetInt("length_book", this.length);
-        this.msg=this.bible.carrot.show_msg("Bible", "Save the book successfully, you can read it in offline mode!", Carrot.Msg_Icon.Success);
+        this.msg=this.bible.carrot.show_msg(PlayerPrefs.GetString("save","Storage"),PlayerPrefs.GetString("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
     }
 
     public void show()
@@ -55,7 +55,7 @@ public class Book_Offline : MonoBehaviour
             if (task.IsFaulted)
             {
                 this.bible.carrot.hide_loading();
-                this.bible.carrot.show_msg("Bible", "Operation error, please try again next time!", Carrot.Msg_Icon.Error);
+                this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
             }
         });
     }
@@ -66,9 +66,9 @@ public class Book_Offline : MonoBehaviour
         {
             this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
 
-            Carrot.Carrot_Box_Item item_title=this.bible.add_title("List of saved books");
+            Carrot.Carrot_Box_Item item_title=this.bible.add_title(PlayerPrefs.GetString("save_list", "List of saved books"));
             item_title.set_icon(this.bible.book.icon_list);
-            item_title.set_tip("You can read these books without an internet connection");
+            item_title.set_tip(PlayerPrefs.GetString("save_list_tip", "You can read these books without an internet connection"));
 
             for (int i = this.length - 1; i >= 0; i--)
             {

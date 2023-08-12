@@ -104,7 +104,7 @@ public class Manager_Book : MonoBehaviour
             if (type_item == "online")
             {
                 Carrot.Carrot_Button_Item btn_save = panel.create_btn("btn_save");
-                btn_save.set_icon_white(this.bible.carrot.icon_carrot_done);
+                btn_save.set_icon_white(this.bible.offline.icon_offline_book);
                 btn_save.set_label("Save");
                 btn_save.set_bk_color(this.bible.carrot.color_highlight);
                 btn_save.set_act_click(() => bible.offline.add(data));
@@ -120,13 +120,19 @@ public class Manager_Book : MonoBehaviour
             }
         }
 
+
+        Carrot.Carrot_Button_Item btn_share = panel.create_btn("btn_share");
+        btn_share.set_icon_white(this.bible.carrot.sp_icon_share);
+        btn_share.set_bk_color(this.bible.carrot.color_highlight);
+        btn_share.set_label(PlayerPrefs.GetString("share", "Share"));
+        btn_share.set_act_click(() => this.share());
+
         Carrot.Carrot_Button_Item btn_close = panel.create_btn("btn_close");
         btn_close.set_icon_white(this.bible.carrot.icon_carrot_cancel);
         btn_close.set_bk_color(this.bible.carrot.color_highlight);
         btn_close.set_label(PlayerPrefs.GetString("cancel", "Cancel"));
         btn_close.set_act_click(() => box_list_chapter.close());
     }
-
 
     private void view_paragraphs_list(IDictionary chapter)
     {
@@ -170,7 +176,6 @@ public class Manager_Book : MonoBehaviour
         obj_txt.transform.localScale = new Vector3(1f, 1f, 1f);
         obj_txt.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
-        this.nav_page(box_paragraphs);
         this.bible.carrot.delay_function(1f, this.fix_size_paragraph);
     }
 
@@ -218,6 +223,7 @@ public class Manager_Book : MonoBehaviour
     private void fix_size_paragraph()
     {
         this.textPro.overflowMode = TextOverflowModes.Masking;
+        this.nav_page(this.box_paragraphs_view);
     }
 
     public void show_list_book_by_type(string s_type)
@@ -253,5 +259,11 @@ public class Manager_Book : MonoBehaviour
                 item_book.set_icon_white(this.bible.icon_book_new_Testament);
         }
         return item_book;
+    }
+
+    private void share()
+    {
+        string url_link = this.bible.carrot.mainhost + "/?p=bible&id=" + this.data_book_cur["id"].ToString();
+        this.bible.carrot.show_share(url_link, "Share this bible book with everyone!");
     }
 }

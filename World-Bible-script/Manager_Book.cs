@@ -220,19 +220,18 @@ public class Manager_Book : MonoBehaviour
         this.textPro.overflowMode = TextOverflowModes.Masking;
     }
 
-    public void show_list_book_by_data(IList list)
+    public void show_list_book_by_type(string s_type)
     {
-        if (this.box_paragraphs_view != null) this.box_paragraphs_view.close();
-        this.box_paragraphs_view = this.bible.carrot.Create_Box();
-        this.box_paragraphs_view.set_icon(this.icon_list);
-
-        for(int i = 0; i < list.Count; i++)
+        this.bible.carrot.play_sound_click();
+        foreach(Transform tr in this.bible.tr_all_item_book)
         {
-            IDictionary data = (IDictionary)list[i];
-            var id_book = data["id"].ToString();
-            Carrot.Carrot_Box_Item item_book = this.item_book(data);
-            item_book.set_act(() => this.view(id_book));
-            this.box_paragraphs_view.add_item(item_book.gameObject);
+            if (tr.gameObject.name== "old_testament"|| tr.gameObject.name == "new_testament")
+            {
+                if (tr.gameObject.name == s_type)
+                    tr.gameObject.SetActive(true);
+                else
+                    tr.gameObject.SetActive(false);
+            }
         }
     }
 

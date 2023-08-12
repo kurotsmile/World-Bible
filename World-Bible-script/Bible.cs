@@ -130,6 +130,8 @@ public class Bible : MonoBehaviour {
                         else
                             item_book.gameObject.GetComponent<Image>().color = this.color_row_b;
 
+                        item_book.gameObject.name= data["type"].ToString();
+
                         Carrot.Carrot_Box_Btn_Item btn_save = item_book.create_item();
                         btn_save.set_icon(this.icon_book_save);
                         btn_save.set_icon_color(Color.white);
@@ -143,13 +145,13 @@ public class Bible : MonoBehaviour {
                     Carrot.Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
                     btn_list_old.set_icon(this.book.icon_list);
                     Destroy(btn_list_old.GetComponent<Button>());
-                    item_Bible_Old.set_act(() => book.show_list_book_by_data(list_book_Old_testament));
+                    item_Bible_Old.set_act(() => book.show_list_book_by_type("old_testament"));
 
                     item_Bible_New.set_tip(list_book_New_testament.Count + " Book");
                     Carrot.Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
                     btn_list_new.set_icon(this.book.icon_list);
                     Destroy(btn_list_new.GetComponent<Button>());
-                    item_Bible_New.set_act(() => book.show_list_book_by_data(list_book_New_testament));
+                    item_Bible_New.set_act(() => book.show_list_book_by_type("new_testament"));
                 }
                 else
                 {

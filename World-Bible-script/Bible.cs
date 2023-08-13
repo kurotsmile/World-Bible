@@ -45,6 +45,7 @@ public class Bible : MonoBehaviour {
         this.carrot.Load_Carrot(this.check_app_exit);
         this.carrot.change_sound_click(this.sound_click_clip);
         this.offline.load();
+        this.search.load();
     }
 
     public void load_app_online(){

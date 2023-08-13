@@ -8,6 +8,13 @@ public class Manager_Search : MonoBehaviour
     [Header("Obj Search")]
     public Sprite icon_search_return;
 
+    private int lenth_seach = -1;
+
+    public void load()
+    {
+        this.lenth_seach = PlayerPrefs.GetInt("lenth_seach", 0);
+    }
+
     public void show_search()
     {
         this.bible.carrot.ads.show_ads_Interstitial();

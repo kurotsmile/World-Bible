@@ -257,8 +257,9 @@ public class Manager_Book : MonoBehaviour
         Carrot.Carrot_Box_Item item_book = this.bible.create_item();
         if (data["name"] != null)
         {
+            string s_type = data["type"].ToString();
             item_book.set_title(data["name"].ToString());
-            item_book.set_tip(data["type"].ToString());
+            item_book.set_tip(PlayerPrefs.GetString(s_type, s_type));
         }
 
         if (data["type"] != null)

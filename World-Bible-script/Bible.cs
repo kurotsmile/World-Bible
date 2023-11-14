@@ -18,6 +18,8 @@ public class Bible : MonoBehaviour {
     public GameObject prefab_book_item;
     public GameObject prefab_loading_item;
     public GameObject prefab_paragraph_item;
+    public GameObject prefab_paragraph_item_ko;
+    public GameObject prefab_paragraph_item_zh;
 
     public Sprite icon_book_old_testament;
     public Sprite icon_book_new_Testament;

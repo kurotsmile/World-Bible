@@ -176,7 +176,11 @@ public class Manager_Book : MonoBehaviour
             s_page= s_page+paragraphs[i].ToString()+" ";
         }
 
-        GameObject obj_txt = Instantiate(this.bible.prefab_paragraph_item);
+        GameObject obj_txt;
+        if(this.bible.carrot.lang.get_key_lang()=="ko") obj_txt=Instantiate(this.bible.prefab_paragraph_item_ko);
+        else if (this.bible.carrot.lang.get_key_lang() == "zh") obj_txt = Instantiate(this.bible.prefab_paragraph_item_zh);
+        else obj_txt = Instantiate(this.bible.prefab_paragraph_item);
+
         this.textPro = obj_txt.GetComponent<TextMeshProUGUI>();
         this.textPro.text = s_page;
 

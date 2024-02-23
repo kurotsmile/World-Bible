@@ -1,9 +1,7 @@
-using Firebase.Extensions;
-using Firebase.Firestore;
+using Carrot;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Manager_Book : MonoBehaviour
 {
@@ -25,29 +23,23 @@ public class Manager_Book : MonoBehaviour
         this.bible.carrot.play_sound_click();
         this.bible.carrot.ads.show_ads_Interstitial();
         this.bible.carrot.show_loading();
+        this.bible.carrot.server.Get_doc_by_path("bible", id, Get_data_for_view_done, Get_data_for_view_fail);
+    }
 
-        this.bible.carrot.db.Collection("bible").Document(id).GetSnapshotAsync().ContinueWithOnMainThread(task=>{
+    private void Get_data_for_view_done(string s_data)
+    {
+        this.bible.carrot.hide_loading();
+        Fire_Document fd = new(s_data);
+        IDictionary data = fd.Get_IDictionary();
+        data["id"] = fd.Get_id();
+        data["type_item"] = "online";
+        this.view_book_by_data(data);
+    }
 
-            DocumentSnapshot book=task.Result;
-
-            if (task.IsCompleted)
-            {
-                this.bible.carrot.hide_loading();
-                if (book.Exists)
-                {
-                    IDictionary data = book.ToDictionary();
-                    data["id"] = book.Id;
-                    data["type_item"] = "online";
-                    this.view_book_by_data(data);
-                }
-            }
-
-            if (task.IsFaulted)
-            {
-                this.bible.carrot.hide_loading();
-                this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown","Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
-            }
-        });
+    private void Get_data_for_view_fail(string s_error)
+    {
+        this.bible.carrot.hide_loading();
+        this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
     }
 
     public void view_book_by_data(IDictionary data)

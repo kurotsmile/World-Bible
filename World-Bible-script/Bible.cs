@@ -1,5 +1,4 @@
-﻿using Firebase.Extensions;
-using Firebase.Firestore;
+﻿using Carrot;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,7 +51,7 @@ public class Bible : MonoBehaviour {
 
     public void load_app_online(){
         if (PlayerPrefs.GetString("lang", "") == "")
-            this.carrot.show_list_lang(this.act_load);
+            this.carrot.show_list_lang(this.Act_load);
         else
             this.menu.load();
     }
@@ -61,7 +60,7 @@ public class Bible : MonoBehaviour {
         this.menu.select_menu(1);
     }
 
-    private void act_load(string s_data){
+    private void Act_load(string s_data){
         this.menu.load();
     }
 
@@ -85,7 +84,7 @@ public class Bible : MonoBehaviour {
     }
 
 	public void show_list_country(){
-        this.carrot.show_list_lang(this.act_load);
+        this.carrot.show_list_lang(this.Act_load);
 	}
 
     public void show_list_book()
@@ -94,58 +93,56 @@ public class Bible : MonoBehaviour {
 
         if (this.is_ready_cache == false)
         {
-            this.get_data_from_sever();
+            this.Get_data_from_sever();
         }
         else
         {
             string s_data = PlayerPrefs.GetString("data_bible_" + this.carrot.lang.get_key_lang());
             if (s_data == "")
             {
-                this.get_data_from_sever();
+                this.Get_data_from_sever();
             }
             else
             {
-                IList list_bible = (IList)Carrot.Json.Deserialize(s_data);
+                IList list_bible = (IList)Json.Deserialize(s_data);
                 this.load_list_by_data(list_bible);
             }
         }
-
     }
 
-    private void get_data_from_sever()
+    private void Get_data_from_sever()
     {
         this.add_loading_item();
-        Query queryBible = this.carrot.db.Collection("bible");
-        queryBible = queryBible.WhereEqualTo("lang", this.carrot.lang.get_key_lang());
-        queryBible.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted)
-            {
-                if (task.Result.Count > 0)
-                {
-                    this.list_data_Bible = (IList)Carrot.Json.Deserialize("[]");
-                    foreach (DocumentSnapshot doc in task.Result.Documents)
-                    {
-                        IDictionary data = doc.ToDictionary();
-                        data["id"] = doc.Id;
-                        this.list_data_Bible.Add(data);
-                    }
-                    this.load_list_by_data(this.list_data_Bible);
-                    PlayerPrefs.SetString("data_bible_" + this.carrot.lang.get_key_lang(), Carrot.Json.Serialize(this.list_data_Bible));
-                    this.is_ready_cache = true;
-                }
-                else
-                {
-                    this.add_none();
-                }
-            }
+        StructuredQuery q = new("bible");
+        q.Add_where("lang", Query_OP.EQUAL, this.carrot.lang.get_key_lang());
+        this.carrot.server.Get_doc(q.ToJson(), Get_data_from_sever_done, Get_data_from_sever_fail);
+    }
 
-            if (task.IsFaulted)
+    private void Get_data_from_sever_done(string s_data)
+    {
+        Fire_Collection fc = new(s_data);
+        if (!fc.is_null)
+        {
+            this.list_data_Bible = (IList)Json.Deserialize("[]");
+            for(int i=0;i<fc.fire_document.Length;i++)
             {
-                this.add_none();
-                this.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
+                IDictionary data = fc.fire_document[i].Get_IDictionary();
+                this.list_data_Bible.Add(data);
             }
-        });
+            this.load_list_by_data(this.list_data_Bible);
+            PlayerPrefs.SetString("data_bible_" + this.carrot.lang.get_key_lang(), Json.Serialize(this.list_data_Bible));
+            this.is_ready_cache = true;
+        }
+        else
+        {
+            this.add_none();
+        }
+    }
+
+    private void Get_data_from_sever_fail(string s_data)
+    {
+        this.add_none();
+        this.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Msg_Icon.Error);
     }
 
     private void load_list_by_data(IList list)
@@ -153,12 +150,12 @@ public class Bible : MonoBehaviour {
         this.carrot.clear_contain(this.tr_all_item_book);
 
         IList list_book_Old_testament = (IList)Carrot.Json.Deserialize("[]");
-        Carrot.Carrot_Box_Item item_Bible_Old = this.add_title(PlayerPrefs.GetString("old_testament", "Old testament"));
+        Carrot_Box_Item item_Bible_Old = this.add_title(PlayerPrefs.GetString("old_testament", "Old testament"));
         item_Bible_Old.set_icon_white(this.icon_book_old_testament);
         item_Bible_Old.set_tip("Old testament");
 
         IList list_book_New_testament = (IList)Carrot.Json.Deserialize("[]");
-        Carrot.Carrot_Box_Item item_Bible_New = this.add_title(PlayerPrefs.GetString("new_testament", "New Testament"));
+        Carrot_Box_Item item_Bible_New = this.add_title(PlayerPrefs.GetString("new_testament", "New Testament"));
         item_Bible_New.set_icon_white(this.icon_book_new_Testament);
         item_Bible_New.set_tip("New Testament");
 

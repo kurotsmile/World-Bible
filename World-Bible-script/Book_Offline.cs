@@ -1,5 +1,4 @@
-using Firebase.Extensions;
-using Firebase.Firestore;
+using Carrot;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,21 +37,20 @@ public class Book_Offline : MonoBehaviour
     public void get_and_save(string id)
     {
         this.bible.carrot.show_loading();
-        this.bible.carrot.db.Collection("bible").Document(id).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            DocumentSnapshot book = task.Result;
-            if (task.IsCompleted)
-            {
-                this.bible.carrot.hide_loading();
-                if (book.Exists) this.add(book.ToDictionary());
-            }
+        this.bible.carrot.server.Get_doc_by_path("bible", id, Get_data_done, Get_data_fail);
+    }
 
-            if (task.IsFaulted)
-            {
-                this.bible.carrot.hide_loading();
-                this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
-            }
-        });
+    private void Get_data_done(string s_data)
+    {
+        this.bible.carrot.hide_loading();
+        Fire_Document fd = new(s_data);
+        this.add(fd.Get_IDictionary());
+    }
+
+    private void Get_data_fail(string s_error)
+    {
+        this.bible.carrot.hide_loading();
+        this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
     }
 
     private void list()

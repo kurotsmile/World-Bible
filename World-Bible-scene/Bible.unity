@@ -766,6 +766,10 @@ PrefabInstance:
       propertyPath: onPurchaseComplete.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: Bible, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3560113166446709643, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
+      propertyPath: key_api
+      value: AIzaSyDzsx1KYLZL5COz1NaTD8cOz8GYalX2Dxc
+      objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424376, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: m_Name
       value: Carrot

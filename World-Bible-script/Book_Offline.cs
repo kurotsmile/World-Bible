@@ -13,16 +13,16 @@ public class Book_Offline : MonoBehaviour
 
     private int length = 0;
     private int index_del = -1;
-    private Carrot.Carrot_Window_Msg msg;
+    private Carrot_Window_Msg msg;
 
-    public void load()
+    public void On_load()
     {
         this.length = PlayerPrefs.GetInt("length_book", 0);
     }
 
     public void add(IDictionary data)
     {
-        PlayerPrefs.SetString("book_" + this.length, Carrot.Json.Serialize(data));
+        PlayerPrefs.SetString("book_" + this.length, Json.Serialize(data));
         this.length++;
         PlayerPrefs.SetInt("length_book", this.length);
         this.msg=this.bible.carrot.show_msg(PlayerPrefs.GetString("save","Storage"),PlayerPrefs.GetString("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
@@ -34,23 +34,10 @@ public class Book_Offline : MonoBehaviour
         this.bible.carrot.delay_function(1.2f, this.list);
     }
 
-    public void get_and_save(string id)
+    public void get_and_save(IDictionary data)
     {
         this.bible.carrot.show_loading();
-        this.bible.carrot.server.Get_doc_by_path("bible", id, Get_data_done, Get_data_fail);
-    }
-
-    private void Get_data_done(string s_data)
-    {
-        this.bible.carrot.hide_loading();
-        Fire_Document fd = new(s_data);
-        this.add(fd.Get_IDictionary());
-    }
-
-    private void Get_data_fail(string s_error)
-    {
-        this.bible.carrot.hide_loading();
-        this.bible.carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Carrot.Msg_Icon.Error);
+        this.add(data);
     }
 
     private void list()
@@ -86,7 +73,7 @@ public class Book_Offline : MonoBehaviour
                     if (i % 2 == 0) item_book.GetComponent<Image>().color = this.bible.color_row_a;
                     else item_book.GetComponent<Image>().color = this.bible.color_row_b;
 
-                    item_book.set_act(() => this.bible.book.view_book_by_data(data));
+                    item_book.set_act(() => this.bible.book.View_book_by_data(data));
                 }
             }
         }

@@ -8,13 +8,6 @@ public class Manager_Search : MonoBehaviour
     [Header("Obj Search")]
     public Sprite icon_search_return;
 
-    private int lenth_seach = -1;
-
-    public void load()
-    {
-        this.lenth_seach = PlayerPrefs.GetInt("lenth_seach", 0);
-    }
-
     public void show_search()
     {
         this.bible.carrot.ads.show_ads_Interstitial();
@@ -31,11 +24,19 @@ public class Manager_Search : MonoBehaviour
         item_inp_search.set_title(PlayerPrefs.GetString("search", "Search"));
         item_inp_search.set_tip(PlayerPrefs.GetString("search_tip", "You can search for any biblical content here!"));
         item_inp_search.inp_val.onSubmit.RemoveAllListeners();
-        item_inp_search.inp_val.onSubmit.AddListener(this.submit_search);
+        item_inp_search.inp_val.onSubmit.AddListener(this.Submit_search);
     }
 
-    private void submit_search(string s_key)
+    private void Submit_search(string s_key)
     {
-        this.bible.carrot.show_msg(s_key);
+        string s_data = PlayerPrefs.GetString("data_bible_" +bible.carrot.lang.get_key_lang());
+        if (s_data != "")
+        {
+            
+        }
+        else
+        {
+            bible.carrot.show_msg("No data");
+        }
     }
 }

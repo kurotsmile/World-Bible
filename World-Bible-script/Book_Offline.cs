@@ -20,7 +20,7 @@ public class Book_Offline : MonoBehaviour
         this.length = PlayerPrefs.GetInt("length_book", 0);
     }
 
-    public void add(IDictionary data)
+    public void Add(IDictionary data)
     {
         PlayerPrefs.SetString("book_" + this.length, Json.Serialize(data));
         this.length++;
@@ -30,14 +30,8 @@ public class Book_Offline : MonoBehaviour
 
     public void show()
     {
-        this.bible.add_loading_item();
+        this.bible.Add_loading_item();
         this.bible.carrot.delay_function(1.2f, this.list);
-    }
-
-    public void get_and_save(IDictionary data)
-    {
-        this.bible.carrot.show_loading();
-        this.add(data);
     }
 
     private void list()
@@ -55,7 +49,7 @@ public class Book_Offline : MonoBehaviour
                     IDictionary data = (IDictionary) Carrot.Json.Deserialize(s_data_book);
                     data["index"] = i;
                     data["type_item"]="offline";
-                    Carrot.Carrot_Box_Item item_book=this.bible.create_item();
+                    Carrot.Carrot_Box_Item item_book=this.bible.Create_item();
                     item_book.set_icon(this.icon_offline_book);
                     item_book.set_title(data["name"].ToString());
 

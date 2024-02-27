@@ -57,7 +57,7 @@ public class Manager_Book : MonoBehaviour
 
             if (chapter["paragraphs"] != null)
             {
-                item_chapter.set_tip(paragraphs.Count + " paragraph");
+                item_chapter.set_tip(paragraphs.Count + " "+PlayerPrefs.GetString("paragraph", "Paragraph"));
                 item_chapter.set_act(() => View_paragraphs_page(chapter));
             }
 
@@ -65,7 +65,6 @@ public class Manager_Book : MonoBehaviour
             btn_page.set_icon(bible.icon_book_open);
             btn_page.set_act(() => View_paragraphs_page(chapter));
             btn_page.set_color(bible.carrot.color_highlight);
-
 
             Carrot.Carrot_Box_Btn_Item btn_list = item_chapter.create_item();
             btn_list.set_icon(icon_list);
@@ -85,7 +84,7 @@ public class Manager_Book : MonoBehaviour
                 btn_save.set_icon_white(bible.offline.icon_offline_book);
                 btn_save.set_label(PlayerPrefs.GetString("save","Save"));
                 btn_save.set_bk_color(bible.carrot.color_highlight);
-                btn_save.set_act_click(() => bible.offline.add(data));
+                btn_save.set_act_click(() => bible.offline.Add(data));
             }
 
             if (type_item == "offline")
@@ -97,7 +96,6 @@ public class Manager_Book : MonoBehaviour
                 btn_del.set_act_click(() => bible.offline.delete(int.Parse(data["index"].ToString())));
             }
         }
-
 
         Carrot_Button_Item btn_share = panel.create_btn("btn_share");
         btn_share.set_icon_white(bible.carrot.sp_icon_share);
@@ -112,7 +110,7 @@ public class Manager_Book : MonoBehaviour
         btn_close.set_act_click(() => box_list_chapter.close());
     }
 
-    private void View_paragraphs_list(IDictionary chapter)
+    public void View_paragraphs_list(IDictionary chapter)
     {
         index_show_chapter = int.Parse(chapter["index"].ToString());
         type_view_page = false;
@@ -137,7 +135,7 @@ public class Manager_Book : MonoBehaviour
         Nav_page(box_paragraphs);
     }
 
-    private void View_paragraphs_page(IDictionary chapter)
+    public void View_paragraphs_page(IDictionary chapter)
     {
         index_show_chapter = int.Parse(chapter["index"].ToString());
         type_view_page = true;
@@ -233,7 +231,7 @@ public class Manager_Book : MonoBehaviour
 
     public Carrot.Carrot_Box_Item Item_book(IDictionary data)
     {
-        Carrot.Carrot_Box_Item item_book = bible.create_item();
+        Carrot.Carrot_Box_Item item_book = bible.Create_item();
         if (data["name"] != null)
         {
             string s_type = data["type"].ToString();
@@ -283,5 +281,10 @@ public class Manager_Book : MonoBehaviour
     private void Show_copy(string s_text)
     {
         bible.carrot.show_input(PlayerPrefs.GetString("copy","Copy"), PlayerPrefs.GetString("copy_tip","Copy this bible passage"), s_text);
+    }
+
+    public void Set_data_book_cur(IDictionary data)
+    {
+        this.data_book_cur = data;
     }
 }

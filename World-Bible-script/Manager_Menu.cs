@@ -29,11 +29,15 @@ public class Manager_Menu : MonoBehaviour
 
     public void select_menu(int index)
     {
-        for (int i = 0; i < this.icon_menu.Length; i++) this.icon_menu[i].sprite = sp_menu_nomal;
-        this.icon_menu[index].sprite = this.sp_menu_select;
-
+        this.Select_Menu_No_func(index);
         if (index == 0) this.bible.show_list_book();
         if (index == 1) this.bible.offline.show();
         if (index == 2) this.bible.search.list();
+    }
+
+    public void Select_Menu_No_func(int index)
+    {
+        for (int i = 0; i < this.icon_menu.Length; i++) this.icon_menu[i].sprite = sp_menu_nomal;
+        this.icon_menu[index].sprite = this.sp_menu_select;
     }
 }

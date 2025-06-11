@@ -13,8 +13,8 @@ public class Manager_Search : MonoBehaviour
 
     public void show_search()
     {
-        this.bible.carrot.ads.show_ads_Interstitial();
-        this.window_search_obj=this.bible.carrot.show_search(Submit_search, PlayerPrefs.GetString("search_tip", "You can search for any biblical content here!"));
+        this.bible.ads.show_ads_Interstitial();
+        this.window_search_obj=this.bible.carrot.show_search(Submit_search, this.bible.carrot.L("search_tip", "You can search for any biblical content here!"));
     }
 
     public void list()
@@ -24,8 +24,8 @@ public class Manager_Search : MonoBehaviour
         item_inp_search.set_icon(this.bible.icon_search);
         item_inp_search.set_type(Carrot.Box_Item_Type.box_value_input);
         item_inp_search.check_type();
-        item_inp_search.set_title(PlayerPrefs.GetString("search", "Search"));
-        item_inp_search.set_tip(PlayerPrefs.GetString("search_tip", "You can search for any biblical content here!"));
+        item_inp_search.set_title(this.bible.carrot.L("search", "Search"));
+        item_inp_search.set_tip(this.bible.carrot.L("search_tip", "You can search for any biblical content here!"));
         item_inp_search.inp_val.onSubmit.RemoveAllListeners();
         item_inp_search.inp_val.onSubmit.AddListener(this.Submit_search);
     }
@@ -33,7 +33,7 @@ public class Manager_Search : MonoBehaviour
     private void Submit_search(string s_key)
     {
         this.bible.Add_loading_item();
-        string s_data = PlayerPrefs.GetString("data_bible_" +bible.carrot.lang.get_key_lang());
+        string s_data = PlayerPrefs.GetString("data_bible_" +bible.carrot.lang.Get_key_lang());
         if (s_data != "")
         {
             Fire_Collection fc = new(s_data);
@@ -44,7 +44,7 @@ public class Manager_Search : MonoBehaviour
                 this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
                 Carrot_Box_Item item_search_results = bible.Create_item();
                 item_search_results.set_icon(bible.icon_search);
-                item_search_results.set_title(PlayerPrefs.GetString("search_results","Search Results"));
+                item_search_results.set_title(this.bible.carrot.L("search_results","Search Results"));
                 item_search_results.set_tip(s_key);
 
                 Carrot_Box_Btn_Item btn_clear = item_search_results.create_item();
@@ -61,7 +61,7 @@ public class Manager_Search : MonoBehaviour
                     if (data["name"].ToString().Contains(s_key))
                     {
                         data["title"] = data["name"].ToString();
-                        data["tip"] = PlayerPrefs.GetString("book", "Book")+" (" + data["name"].ToString() + ")";
+                        data["tip"] = this.bible.carrot.L("book", "Book")+" (" + data["name"].ToString() + ")";
                         data["type_search"] = "book";
                         this.Add_item_search(data);
                         count_found++;
@@ -78,7 +78,7 @@ public class Manager_Search : MonoBehaviour
                             if (paragraphs[z].ToString().Contains(s_key))
                             {
                                 data["title"] = paragraphs[z].ToString();
-                                data["tip"] = PlayerPrefs.GetString("book","Book")+" ("+data["name"].ToString()+") -> "+PlayerPrefs.GetString("chapter", "Chapter")+" : "+(y+1)+" -> "+ PlayerPrefs.GetString("paragraph", "Paragraph")+" ("+ (z+1)+")";
+                                data["tip"] = this.bible.carrot.L("book","Book")+" ("+data["name"].ToString()+") -> "+this.bible.carrot.L("chapter", "Chapter")+" : "+(y+1)+" -> "+ this.bible.carrot.L("paragraph", "Paragraph")+" ("+ (z+1)+")";
                                 data["type_search"] = "paragraph";
                                 data["data_chapter"] = chapter;
                                 this.Add_item_search(data);
@@ -100,12 +100,12 @@ public class Manager_Search : MonoBehaviour
             }
             else
             {
-                bible.carrot.show_msg("No data");
+                bible.carrot.Show_msg("No data");
             }
         }
         else
         {
-            bible.carrot.show_msg("No data");
+            bible.carrot.Show_msg("No data");
         }
     }
 

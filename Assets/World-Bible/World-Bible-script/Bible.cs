@@ -13,6 +13,7 @@ public class Bible : MonoBehaviour {
     public Book_Offline offline;
     public Manager_Menu menu;
     public Manager_Search search;
+    public IronSourceAds ads;
 
     [Header("Obj Bible")]
     public Transform tr_all_item_book;
@@ -53,7 +54,7 @@ public class Bible : MonoBehaviour {
 
     public void load_app_online(){
         if (PlayerPrefs.GetString("lang", "") == "")
-            carrot.show_list_lang(Act_load);
+            carrot.Show_list_lang(Act_load);
         else
             menu.load();
     }
@@ -76,14 +77,14 @@ public class Bible : MonoBehaviour {
     {
         if (timer_ads <= 0)
         {
-            carrot.ads.show_ads_Interstitial();
+            this.ads.ShowInterstitialAd();
             timer_ads = 300.0f;
         }
     }
 
 	public void show_list_country(){
         is_ready_cache = false;
-        carrot.show_list_lang(Act_load);
+        carrot.Show_list_lang(Act_load);
 	}
 
     public void show_list_book()
@@ -92,14 +93,14 @@ public class Bible : MonoBehaviour {
 
         if (is_ready_cache == false)
         {
-            Get_data_by_lang_from_sever(carrot.lang.get_key_lang());
+            Get_data_by_lang_from_sever(carrot.lang.Get_key_lang());
         }
         else
         {
-            string s_data = PlayerPrefs.GetString("data_bible_" + carrot.lang.get_key_lang());
+            string s_data = PlayerPrefs.GetString("data_bible_" + carrot.lang.Get_key_lang());
             if (s_data == "")
             {
-                Get_data_by_lang_from_sever(carrot.lang.get_key_lang());
+                Get_data_by_lang_from_sever(carrot.lang.Get_key_lang());
             }
             else
             {
@@ -120,7 +121,7 @@ public class Bible : MonoBehaviour {
     {
         Add_loading_item();
         StructuredQuery q = new("bible");
-        q.Add_where("lang", Query_OP.EQUAL, carrot.lang.get_key_lang());
+        q.Add_where("lang", Query_OP.EQUAL, carrot.lang.Get_key_lang());
         carrot.server.Get_doc(q.ToJson(), Get_data_from_sever_done, Get_data_from_sever_fail);
     }
 
@@ -131,14 +132,14 @@ public class Bible : MonoBehaviour {
 
     private void Get_data_from_sever_done(string s_data)
     {
-        PlayerPrefs.SetString("data_bible_" + carrot.lang.get_key_lang(), s_data);
+        PlayerPrefs.SetString("data_bible_" + carrot.lang.Get_key_lang(), s_data);
         is_ready_cache = true;
         Load_list_by_data(s_data);
     }
 
     private void Get_data_from_sever_fail(string s_error)
     {
-        string s_data = PlayerPrefs.GetString("data_bible_" + carrot.lang.get_key_lang());
+        string s_data = PlayerPrefs.GetString("data_bible_" + carrot.lang.Get_key_lang());
         if (s_data != "")
         {
             Load_list_by_data(s_data);
@@ -146,7 +147,7 @@ public class Bible : MonoBehaviour {
         else
         {
             add_none();
-            carrot.show_msg(PlayerPrefs.GetString("app_title", "Bible world"), PlayerPrefs.GetString("error_unknown", "Operation error, please try again next time!"), Msg_Icon.Error);
+            carrot.Show_msg(this.carrot.L("app_title", "Bible world"),this.carrot.L("error_unknown", "Operation error, please try again next time!"), Msg_Icon.Error);
         }
     }
 
@@ -167,12 +168,12 @@ public class Bible : MonoBehaviour {
             list_data_Bible = SortListByOrderKey(list_data_Bible);
 
             IList list_book_Old_testament = (IList)Json.Deserialize("[]");
-            Carrot_Box_Item item_Bible_Old = add_title(PlayerPrefs.GetString("old_testament", "Old testament"));
+            Carrot_Box_Item item_Bible_Old = add_title(this.carrot.L("old_testament", "Old testament"));
             item_Bible_Old.set_icon_white(icon_book_old_testament);
             item_Bible_Old.set_tip("Old testament");
 
             IList list_book_New_testament = (IList)Json.Deserialize("[]");
-            Carrot_Box_Item item_Bible_New = add_title(PlayerPrefs.GetString("new_testament", "New Testament"));
+            Carrot_Box_Item item_Bible_New = add_title(this.carrot.L("new_testament", "New Testament"));
             item_Bible_New.set_icon_white(icon_book_new_Testament);
             item_Bible_New.set_tip("New Testament");
 
@@ -211,19 +212,19 @@ public class Bible : MonoBehaviour {
 
             Carrot_Box_Item item_book_update = this.Create_item();
             item_book_update.set_icon_white(carrot.icon_carrot_download);
-            item_book_update.set_title(PlayerPrefs.GetString("check_update", "Check and update book data"));
-            item_book_update.set_tip(PlayerPrefs.GetString("check_update_tip", "Download new data and updated books in the current language"));
+            item_book_update.set_title(this.carrot.L("check_update", "Check and update book data"));
+            item_book_update.set_tip(this.carrot.L("check_update_tip", "Download new data and updated books in the current language"));
             item_book_update.txt_tip.color = Color.black;
             item_book_update.set_act(() => Get_data_from_sever());
             item_book_update.gameObject.GetComponent<Image>().color = carrot.color_highlight;
 
-            item_Bible_Old.set_tip(list_book_Old_testament.Count + " " + PlayerPrefs.GetString("book", "Book"));
+            item_Bible_Old.set_tip(list_book_Old_testament.Count + " " + this.carrot.L("book", "Book"));
             Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
             btn_list_old.set_icon(book.icon_list);
             Destroy(btn_list_old.GetComponent<Button>());
             item_Bible_Old.set_act(() => book.Show_list_book_by_type("old_testament"));
 
-            item_Bible_New.set_tip(list_book_New_testament.Count + " " + PlayerPrefs.GetString("book", "Book"));
+            item_Bible_New.set_tip(list_book_New_testament.Count + " " + this.carrot.L("book", "Book"));
             Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
             btn_list_new.set_icon(book.icon_list);
             Destroy(btn_list_new.GetComponent<Button>());

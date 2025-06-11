@@ -150,8 +150,8 @@ public class Manager_Book : MonoBehaviour
         }
 
         GameObject obj_txt;
-        if(bible.carrot.lang.get_key_lang()=="ko") obj_txt=Instantiate(bible.prefab_paragraph_item_ko);
-        else if (bible.carrot.lang.get_key_lang() == "zh") obj_txt = Instantiate(bible.prefab_paragraph_item_zh);
+        if(bible.carrot.lang.Get_key_lang()=="ko") obj_txt=Instantiate(bible.prefab_paragraph_item_ko);
+        else if (bible.carrot.lang.Get_key_lang() == "zh") obj_txt = Instantiate(bible.prefab_paragraph_item_zh);
         else obj_txt = Instantiate(bible.prefab_paragraph_item);
 
         textPro = obj_txt.GetComponent<TextMeshProUGUI>();
@@ -280,7 +280,7 @@ public class Manager_Book : MonoBehaviour
 
     private void Show_copy(string s_text)
     {
-        bible.carrot.show_input(PlayerPrefs.GetString("copy","Copy"), PlayerPrefs.GetString("copy_tip","Copy this bible passage"), s_text);
+        bible.carrot.Show_input(this.bible.carrot.L("copy","Copy"),this.bible.carrot.L("copy_tip","Copy this bible passage"), s_text);
     }
 
     public void Set_data_book_cur(IDictionary data)

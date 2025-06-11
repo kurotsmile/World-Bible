@@ -25,7 +25,7 @@ public class Book_Offline : MonoBehaviour
         PlayerPrefs.SetString("book_" + this.length, Json.Serialize(data));
         this.length++;
         PlayerPrefs.SetInt("length_book", this.length);
-        this.msg=this.bible.carrot.show_msg(PlayerPrefs.GetString("save","Storage"),PlayerPrefs.GetString("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
+        this.msg=this.bible.carrot.Show_msg(this.bible.carrot.L("save","Storage"),this.bible.carrot.L("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
     }
 
     public void show()
@@ -80,15 +80,15 @@ public class Book_Offline : MonoBehaviour
 
     private void add_title()
     {
-        Carrot.Carrot_Box_Item item_title = this.bible.add_title(PlayerPrefs.GetString("save_list", "List of saved books"));
+        Carrot.Carrot_Box_Item item_title = this.bible.add_title(this.bible.carrot.L("save_list", "List of saved books"));
         item_title.set_icon(this.bible.book.icon_list);
-        item_title.set_tip(PlayerPrefs.GetString("save_list_tip", "You can read these books without an internet connection"));
+        item_title.set_tip(this.bible.carrot.L("save_list_tip", "You can read these books without an internet connection"));
     }
 
     public void delete(int index)
     {
         this.index_del = index;
-        this.msg=this.bible.carrot.show_msg("Delete", "Are you sure you want to remove this item?", this.delete_yes, this.delete_no);
+        this.msg=this.bible.carrot.Show_msg("Delete", "Are you sure you want to remove this item?", this.delete_yes, this.delete_no);
     }
 
     private void delete_yes()

@@ -46,9 +46,9 @@ public class Manager_Book : MonoBehaviour
         box_list_chapter.set_title(data["name"].ToString());
 
         IList contents = (IList)data["contents"];
-        for(int i=0;i<contents.Count;i++)
+        for (int i = 0; i < contents.Count; i++)
         {
-            IDictionary chapter = (IDictionary) contents[i];
+            IDictionary chapter = (IDictionary)contents[i];
             chapter["index"] = i;
             Carrot_Box_Item item_chapter = box_list_chapter.create_item();
             item_chapter.set_icon_white(bible.icon_chapter);
@@ -57,7 +57,7 @@ public class Manager_Book : MonoBehaviour
 
             if (chapter["paragraphs"] != null)
             {
-                item_chapter.set_tip(paragraphs.Count + " "+PlayerPrefs.GetString("paragraph", "Paragraph"));
+                item_chapter.set_tip(paragraphs.Count + " " + this.bible.carrot.L("paragraph", "Paragraph"));
                 item_chapter.set_act(() => View_paragraphs_page(chapter));
             }
 
@@ -82,7 +82,7 @@ public class Manager_Book : MonoBehaviour
             {
                 Carrot.Carrot_Button_Item btn_save = panel.create_btn("btn_save");
                 btn_save.set_icon_white(bible.offline.icon_offline_book);
-                btn_save.set_label(PlayerPrefs.GetString("save","Save"));
+                btn_save.set_label(this.bible.carrot.L("save", "Save"));
                 btn_save.set_bk_color(bible.carrot.color_highlight);
                 btn_save.set_act_click(() => bible.offline.Add(data));
             }
@@ -91,7 +91,7 @@ public class Manager_Book : MonoBehaviour
             {
                 Carrot.Carrot_Button_Item btn_del = panel.create_btn("btn_del");
                 btn_del.set_icon_white(bible.carrot.sp_icon_del_data);
-                btn_del.set_label(PlayerPrefs.GetString("del","Delete"));
+                btn_del.set_label(this.bible.carrot.L("del", "Delete"));
                 btn_del.set_bk_color(bible.carrot.color_highlight);
                 btn_del.set_act_click(() => bible.offline.delete(int.Parse(data["index"].ToString())));
             }
@@ -100,13 +100,13 @@ public class Manager_Book : MonoBehaviour
         Carrot_Button_Item btn_share = panel.create_btn("btn_share");
         btn_share.set_icon_white(bible.carrot.sp_icon_share);
         btn_share.set_bk_color(bible.carrot.color_highlight);
-        btn_share.set_label(PlayerPrefs.GetString("share", "Share"));
+        btn_share.set_label(this.bible.carrot.L("share", "Share"));
         btn_share.set_act_click(() => Share());
 
         Carrot_Button_Item btn_close = panel.create_btn("btn_close");
         btn_close.set_icon_white(bible.carrot.icon_carrot_cancel);
         btn_close.set_bk_color(bible.carrot.color_highlight);
-        btn_close.set_label(PlayerPrefs.GetString("cancel", "Cancel"));
+        btn_close.set_label(this.bible.carrot.L("cancel", "Cancel"));
         btn_close.set_act_click(() => box_list_chapter.close());
     }
 
@@ -116,20 +116,20 @@ public class Manager_Book : MonoBehaviour
         type_view_page = false;
         data_chapter_cur = chapter;
         bible.carrot.play_sound_click();
-        Carrot.Carrot_Box box_paragraphs = Box_view(data_book_cur["name"].ToString() + " ("+PlayerPrefs.GetString("chapter", "Chapter") +" "+ (index_show_chapter + 1)+")");
+        Carrot.Carrot_Box box_paragraphs = Box_view(data_book_cur["name"].ToString() + " (" + this.bible.carrot.L("chapter", "Chapter") + " " + (index_show_chapter + 1) + ")");
         IList paragraphs = (IList)chapter["paragraphs"];
         for (int i = 0; i < paragraphs.Count; i++)
         {
             string s_paragraph = paragraphs[i].ToString();
-            Carrot.Carrot_Box_Item item_p=box_paragraphs.create_item("p_" + i);
+            Carrot.Carrot_Box_Item item_p = box_paragraphs.create_item("p_" + i);
             item_p.set_title(s_paragraph);
-            item_p.set_tip("sentence "+(i+1).ToString());
+            item_p.set_tip("sentence " + (i + 1).ToString());
             item_p.set_icon(bible.icon_paragraph);
 
-            Carrot.Carrot_Box_Btn_Item btn_copy=item_p.create_item();
+            Carrot.Carrot_Box_Btn_Item btn_copy = item_p.create_item();
             btn_copy.set_icon(bible.icon_copy);
             btn_copy.set_color(bible.carrot.color_highlight);
-            btn_copy.set_act(() =>Show_copy(s_paragraph));
+            btn_copy.set_act(() => Show_copy(s_paragraph));
         }
 
         Nav_page(box_paragraphs);
@@ -141,16 +141,16 @@ public class Manager_Book : MonoBehaviour
         type_view_page = true;
         data_chapter_cur = chapter;
         bible.carrot.play_sound_click();
-        Carrot.Carrot_Box box_paragraphs = Box_view(data_book_cur["name"].ToString()+ " (" + PlayerPrefs.GetString("chapter", "Chapter") + " "+(index_show_chapter +1)+ ")");
+        Carrot.Carrot_Box box_paragraphs = Box_view(data_book_cur["name"].ToString() + " (" + this.bible.carrot.L("chapter", "Chapter") + " " + (index_show_chapter + 1) + ")");
         IList paragraphs = (IList)chapter["paragraphs"];
         string s_page = "";
         for (int i = 0; i < paragraphs.Count; i++)
         {
-            s_page= s_page+paragraphs[i].ToString()+" ";
+            s_page = s_page + paragraphs[i].ToString() + " ";
         }
 
         GameObject obj_txt;
-        if(bible.carrot.lang.Get_key_lang()=="ko") obj_txt=Instantiate(bible.prefab_paragraph_item_ko);
+        if (bible.carrot.lang.Get_key_lang() == "ko") obj_txt = Instantiate(bible.prefab_paragraph_item_ko);
         else if (bible.carrot.lang.Get_key_lang() == "zh") obj_txt = Instantiate(bible.prefab_paragraph_item_zh);
         else obj_txt = Instantiate(bible.prefab_paragraph_item);
 
@@ -170,13 +170,13 @@ public class Manager_Book : MonoBehaviour
         Carrot.Carrot_Box_Btn_Panel panel = box.create_panel_btn();
         Carrot.Carrot_Button_Item btn_prev = panel.create_btn("btn_prev");
         btn_prev.set_icon(bible.icon_prev_page);
-        btn_prev.set_label(PlayerPrefs.GetString("prev","Previous"));
+        btn_prev.set_label(this.bible.carrot.L("prev", "Previous"));
         btn_prev.set_bk_color(bible.carrot.color_highlight);
         btn_prev.set_act_click(() => Prev_page());
 
         Carrot.Carrot_Button_Item btn_next = panel.create_btn("btn_next");
         btn_next.set_icon(bible.icon_next_page);
-        btn_next.set_label(PlayerPrefs.GetString("next","Next"));
+        btn_next.set_label(this.bible.carrot.L("next", "Next"));
         btn_next.set_bk_color(bible.carrot.color_highlight);
         btn_next.set_act_click(() => Nex_page());
     }
@@ -188,7 +188,7 @@ public class Manager_Book : MonoBehaviour
         box_paragraphs_view.set_icon_white(bible.icon_chapter);
         box_paragraphs_view.set_title(s_title);
 
-        Carrot.Carrot_Box_Btn_Item btn_page= box_paragraphs_view.create_btn_menu_header(bible.icon_book_open);
+        Carrot.Carrot_Box_Btn_Item btn_page = box_paragraphs_view.create_btn_menu_header(bible.icon_book_open);
         btn_page.set_act(() => View_paragraphs_page_chapter_cur());
         if (type_view_page == true) btn_page.set_icon_color(bible.carrot.color_highlight);
         Carrot.Carrot_Box_Btn_Item btn_list = box_paragraphs_view.create_btn_menu_header(icon_list);
@@ -217,9 +217,9 @@ public class Manager_Book : MonoBehaviour
     public void Show_list_book_by_type(string s_type)
     {
         bible.carrot.play_sound_click();
-        foreach(Transform tr in bible.tr_all_item_book)
+        foreach (Transform tr in bible.tr_all_item_book)
         {
-            if (tr.gameObject.name== "old_testament"|| tr.gameObject.name == "new_testament")
+            if (tr.gameObject.name == "old_testament" || tr.gameObject.name == "new_testament")
             {
                 if (tr.gameObject.name == s_type)
                     tr.gameObject.SetActive(true);
@@ -236,7 +236,7 @@ public class Manager_Book : MonoBehaviour
         {
             string s_type = data["type"].ToString();
             item_book.set_title(data["name"].ToString());
-            item_book.set_tip(PlayerPrefs.GetString(s_type, s_type));
+            item_book.set_tip(this.bible.carrot.L(s_type, s_type));
         }
 
         if (data["type"] != null)
@@ -253,7 +253,7 @@ public class Manager_Book : MonoBehaviour
     private void Share()
     {
         string url_link = bible.carrot.mainhost + "/?p=bible&id=" + data_book_cur["id"].ToString();
-        bible.carrot.show_share(url_link, PlayerPrefs.GetString("bible_share", "Share this bible book with everyone!"));
+        bible.carrot.show_share(url_link, this.bible.carrot.L("bible_share", "Share this bible book with everyone!"));
     }
 
     private void Nex_page()
@@ -280,11 +280,21 @@ public class Manager_Book : MonoBehaviour
 
     private void Show_copy(string s_text)
     {
-        bible.carrot.Show_input(this.bible.carrot.L("copy","Copy"),this.bible.carrot.L("copy_tip","Copy this bible passage"), s_text);
+        bible.carrot.Show_input(this.bible.carrot.L("copy", "Copy"), this.bible.carrot.L("copy_tip", "Copy this bible passage"), s_text);
     }
 
     public void Set_data_book_cur(IDictionary data)
     {
         this.data_book_cur = data;
+    }
+
+    public void ShowAddBook()
+    {
+        Carrot_Box box_add = this.bible.carrot.Create_Box();
+        box_add.set_title("Add Book");
+        box_add.set_icon(this.bible.carrot.icon_carrot_add);
+
+        Carrot_Box_Item item_name = box_add.create_item();
+        item_name.set_icon(this.bible.carrot.user.icon_user_name);
     }
 }

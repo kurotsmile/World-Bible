@@ -792,7 +792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: model_app
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: type_rate
@@ -800,7 +800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: setting_lang
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: store_public
@@ -812,11 +812,15 @@ PrefabInstance:
       objectReference: {fileID: 1544314737}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: setting_login
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: link_share_app
       value: https://carrotstore.com/p/com.carrotstore.bible
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
+      propertyPath: FileNameLangApp
+      value: lang_app.json
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: Carrotstore_AppId
@@ -2224,6 +2228,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1246494492
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6448435818284354482, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_Name
+      value: Carrot_File
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207293136287230912, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+--- !u!114 &1246494493 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2429928707306957782, guid: c9adf0b9b6b6df848a318dd2a6fb1d8d, type: 3}
+  m_PrefabInstance: {fileID: 1246494492}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5473a80234ccc4ba13da98035e8090, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1341146924
 GameObject:
   m_ObjectHideFlags: 0
@@ -2383,6 +2455,7 @@ GameObject:
   - component: {fileID: 1544314740}
   - component: {fileID: 1544314741}
   - component: {fileID: 1544314742}
+  - component: {fileID: 1544314743}
   m_Layer: 0
   m_Name: Bible
   m_TagString: Untagged
@@ -2422,6 +2495,8 @@ MonoBehaviour:
   offline: {fileID: 1544314740}
   menu: {fileID: 1544314741}
   search: {fileID: 1544314742}
+  ads: {fileID: 1544314743}
+  file: {fileID: 1246494493}
   tr_all_item_book: {fileID: 919562589}
   prefab_book_item: {fileID: 346399769378897854, guid: 5c76e0e7f1ec6f749989da9d070de244, type: 3}
   prefab_loading_item: {fileID: 5468248173947337401, guid: 645ac0cb8d7bef84193ef40e8114c9c3, type: 3}
@@ -2439,6 +2514,7 @@ MonoBehaviour:
   icon_next_page: {fileID: 21300000, guid: 4a37db1bf648748498a49b8e5dc22f25, type: 3}
   icon_prev_page: {fileID: 21300000, guid: a468ac2a7f1be6d4db771428329777aa, type: 3}
   icon_copy: {fileID: 21300000, guid: 6c94a1a7dc8afd347976ec0a0a97a6e9, type: 3}
+  icon_path_file: {fileID: 21300000, guid: 640de362990b3754a94563de562306ad, type: 3}
   color_row_a:
     serializedVersion: 2
     rgba: 1994251741
@@ -2510,6 +2586,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  call_full_when_on_start: 1
 --- !u!114 &1544314739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2571,6 +2648,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bible: {fileID: 1544314736}
   icon_search_return: {fileID: 21300000, guid: 9357c6f67a89df2419ec02f2ed954372, type: 3}
+--- !u!114 &1544314743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544314734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c416830ab371346afb8bd821b27291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count_step_show_interstitial: 5
+  emplement_Ads: []
+  app_key: 226e5fe6d
+  id_banner: uoxbu8k0efiixuj1
+  id_video: l3s99in13a6zp1wp
+  id_rewarded: g59qrf1hlwu7wtcn
 --- !u!1 &1589868892
 GameObject:
   m_ObjectHideFlags: 0
@@ -3188,3 +3283,4 @@ SceneRoots:
   - {fileID: 1341146927}
   - {fileID: 1544314735}
   - {fileID: 521575781}
+  - {fileID: 1246494492}

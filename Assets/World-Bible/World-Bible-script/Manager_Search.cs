@@ -126,7 +126,7 @@ public class Manager_Search : MonoBehaviour
 
         if (s_type_book == "book")
         {
-            item_book.set_act(() => bible.book.View(data));
+            item_book.set_act(() => bible.book.View(data,-1));
         }
         else
         {

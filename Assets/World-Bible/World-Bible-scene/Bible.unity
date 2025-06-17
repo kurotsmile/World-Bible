@@ -820,7 +820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: FileNameLangApp
-      value: lang_app.json
+      value: lang_app
       objectReference: {fileID: 0}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: Carrotstore_AppId
@@ -834,14 +834,6 @@ PrefabInstance:
       propertyPath: WindowUWP_ProductId
       value: 9N6M97BHKP1R
       objectReference: {fileID: 0}
-    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
-      propertyPath: check_lost_internet
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
-      propertyPath: carrot_lost_internet
-      value: 
-      objectReference: {fileID: 1544314738}
     - target: {fileID: 5170736565810424378, guid: 03a96ab3934df714c9f607eeba1302ab, type: 3}
       propertyPath: color_highlight.rgba
       value: 4278226431
@@ -2451,11 +2443,11 @@ GameObject:
   - component: {fileID: 1544314736}
   - component: {fileID: 1544314739}
   - component: {fileID: 1544314737}
-  - component: {fileID: 1544314738}
   - component: {fileID: 1544314740}
   - component: {fileID: 1544314741}
   - component: {fileID: 1544314742}
   - component: {fileID: 1544314743}
+  - component: {fileID: 1544314744}
   m_Layer: 0
   m_Name: Bible
   m_TagString: Untagged
@@ -2515,13 +2507,23 @@ MonoBehaviour:
   icon_prev_page: {fileID: 21300000, guid: a468ac2a7f1be6d4db771428329777aa, type: 3}
   icon_copy: {fileID: 21300000, guid: 6c94a1a7dc8afd347976ec0a0a97a6e9, type: 3}
   icon_path_file: {fileID: 21300000, guid: 640de362990b3754a94563de562306ad, type: 3}
+  icon_speech: {fileID: 21300000, guid: 0c988af2d2de25d4a8d1365bd9c3b469, type: 3}
+  sound_click_clip: {fileID: 8300000, guid: 0459c777a820feb4d93bea3c12782754, type: 3}
   color_row_a:
     serializedVersion: 2
     rgba: 1994251741
   color_row_b:
     serializedVersion: 2
     rgba: 2142960383
-  sound_click_clip: {fileID: 8300000, guid: 0459c777a820feb4d93bea3c12782754, type: 3}
+  color_text_title:
+    serializedVersion: 2
+    rgba: 4278194323
+  color_row_title_a:
+    serializedVersion: 2
+    rgba: 4278222769
+  color_row_title_b:
+    serializedVersion: 2
+    rgba: 4282202284
 --- !u!114 &1544314737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2540,53 +2542,6 @@ MonoBehaviour:
   - {fileID: 552070384}
   List_img_change_icon_lang:
   - {fileID: 489169906}
---- !u!114 &1544314738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1544314734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0df31ea1faaefa44bd7d4bb685bbd15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  carrot: {fileID: 521575782}
-  emp_online:
-  - {fileID: 414954925}
-  emp_offline: []
-  act_when_online:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1544314736}
-        m_TargetAssemblyTypeName: Bible, Assembly-CSharp
-        m_MethodName: load_app_online
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  act_when_offline:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1544314736}
-        m_TargetAssemblyTypeName: Bible, Assembly-CSharp
-        m_MethodName: load_app_offline
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  call_full_when_on_start: 1
 --- !u!114 &1544314739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2601,6 +2556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bible: {fileID: 1544314736}
   icon_list: {fileID: 21300000, guid: a485b3ea8581f674a8492902459c1d9e, type: 3}
+  audioSpeaker: {fileID: 1544314744}
 --- !u!114 &1544314740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2666,6 +2622,103 @@ MonoBehaviour:
   id_banner: uoxbu8k0efiixuj1
   id_video: l3s99in13a6zp1wp
   id_rewarded: g59qrf1hlwu7wtcn
+--- !u!82 &1544314744
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544314734}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1589868892
 GameObject:
   m_ObjectHideFlags: 0

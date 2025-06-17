@@ -1,7 +1,10 @@
 using Carrot;
+using SimpleFileBrowser;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Manager_Book : MonoBehaviour
 {
@@ -10,16 +13,54 @@ public class Manager_Book : MonoBehaviour
 
     [Header("Obj Book")]
     public Sprite icon_list;
+    public IList list_data_Bible;
+    public AudioSource audioSpeaker;
     private TextMeshProUGUI textPro;
 
     private IDictionary data_book_cur = null;
     private IDictionary data_chapter_cur = null;
     private Carrot_Box box_paragraphs_view = null;
+    private Carrot_Box BoxChapterView = null;
     private bool type_view_page = false;
+    private int IndexContentEdit = -1;
+    private int IndexBookEdit = -1;
     private int index_show_chapter = -1;
+    private string s_path_data = "";
+    private bool is_editor = false;
 
-    public void View(IDictionary data)
+    public void OnLoad()
     {
+        if (PlayerPrefs.GetString("path_data", "") != "")
+        {
+            s_path_data = PlayerPrefs.GetString("path_data");
+            this.is_editor = true;
+        }
+        else
+        {
+            s_path_data = System.IO.Path.Combine(Application.dataPath, "Resources");
+            this.is_editor = false;
+        }
+    }
+
+    public string GetPathData()
+    {
+        return this.s_path_data;
+    }
+
+    public void SetPathData(string s_path_new)
+    {
+        this.s_path_data = s_path_new;
+        this.is_editor = true;
+    }
+
+    public bool IsEditor()
+    {
+        return this.is_editor;
+    }
+
+    public void View(IDictionary data, int index)
+    {
+        this.IndexBookEdit = index;
         bible.carrot.play_sound_click();
         data["type_item"] = "online";
         View_book_by_data(data);
@@ -28,51 +69,115 @@ public class Manager_Book : MonoBehaviour
     public void View_book_by_data(IDictionary data)
     {
         data_book_cur = data;
-        Carrot_Box box_list_chapter = bible.carrot.Create_Box();
+        if (this.BoxChapterView != null) this.BoxChapterView.close();
+        this.BoxChapterView = bible.carrot.Create_Box();
 
         if (data["type"] != null)
         {
             string s_type_book = data["type"].ToString();
             if (s_type_book == "old_testament")
-                box_list_chapter.set_icon_white(bible.icon_book_old_testament);
+                this.BoxChapterView.set_icon_white(bible.icon_book_old_testament);
             else
-                box_list_chapter.set_icon_white(bible.icon_book_new_Testament);
+                this.BoxChapterView.set_icon_white(bible.icon_book_new_Testament);
         }
         else
         {
-            box_list_chapter.set_icon_white(bible.icon_book_new_Testament);
+            this.BoxChapterView.set_icon_white(bible.icon_book_new_Testament);
         }
 
-        box_list_chapter.set_title(data["name"].ToString());
-
-        IList contents = (IList)data["contents"];
-        for (int i = 0; i < contents.Count; i++)
+        this.BoxChapterView.set_title(data["name"].ToString());
+        if (this.is_editor)
         {
-            IDictionary chapter = (IDictionary)contents[i];
-            chapter["index"] = i;
-            Carrot_Box_Item item_chapter = box_list_chapter.create_item();
-            item_chapter.set_icon_white(bible.icon_chapter);
-            if (chapter["name"] != null) item_chapter.set_title(chapter["name"].ToString());
-            IList paragraphs = (IList)chapter["paragraphs"];
-
-            if (chapter["paragraphs"] != null)
+            this.BoxChapterView.create_btn_menu_header(this.bible.carrot.icon_carrot_add).set_act(() =>
             {
-                item_chapter.set_tip(paragraphs.Count + " " + this.bible.carrot.L("paragraph", "Paragraph"));
-                item_chapter.set_act(() => View_paragraphs_page(chapter));
-            }
-
-            Carrot.Carrot_Box_Btn_Item btn_page = item_chapter.create_item();
-            btn_page.set_icon(bible.icon_book_open);
-            btn_page.set_act(() => View_paragraphs_page(chapter));
-            btn_page.set_color(bible.carrot.color_highlight);
-
-            Carrot.Carrot_Box_Btn_Item btn_list = item_chapter.create_item();
-            btn_list.set_icon(icon_list);
-            btn_list.set_act(() => View_paragraphs_list(chapter));
-            btn_list.set_color(bible.carrot.color_highlight);
+                if (this.data_book_cur["contents"] == null)
+                {
+                    IList list_C = Json.Deserialize("[]") as IList;
+                    IDictionary chapter = Json.Deserialize("{}") as IDictionary;
+                    IList paragraphs = Json.Deserialize("[]") as IList;
+                    chapter["name"] = this.data_book_cur["name"].ToString() + (list_C.Count + 1);
+                    chapter["tip"] = this.data_book_cur["name"].ToString() + (list_C.Count + 1);
+                    chapter["paragraphs"] = paragraphs;
+                    list_C.Add(chapter);
+                    this.data_book_cur["contents"] = list_C;
+                    this.list_data_Bible[this.IndexBookEdit] = this.data_book_cur;
+                    this.UpdateDataFile();
+                    this.View_book_by_data(this.data_book_cur);
+                }
+                else
+                {
+                    IList list_C = this.data_book_cur["contents"] as IList;
+                    IDictionary chapter = Json.Deserialize("{}") as IDictionary;
+                    IList paragraphs = Json.Deserialize("[]") as IList;
+                    chapter["name"] = this.data_book_cur["name"].ToString() + (list_C.Count + 1);
+                    chapter["tip"] = this.data_book_cur["name"].ToString() + (list_C.Count + 1);
+                    chapter["paragraphs"] = paragraphs;
+                    list_C.Add(chapter);
+                    this.data_book_cur["contents"] = list_C;
+                    this.View_book_by_data(this.data_book_cur);
+                }
+                this.bible.carrot.play_sound_click();
+            });
         }
 
-        Carrot_Box_Btn_Panel panel = box_list_chapter.create_panel_btn();
+        if (data["contents"] != null)
+        {
+            IList contents = (IList)data["contents"];
+            for (int i = 0; i < contents.Count; i++)
+            {
+                var index_p = i;
+                IDictionary chapter = (IDictionary)contents[i];
+                var dataChapter = chapter;
+                chapter["index"] = i;
+                Carrot_Box_Item item_chapter = this.BoxChapterView.create_item();
+                item_chapter.set_icon_white(bible.icon_chapter);
+                if (chapter["name"] != null) item_chapter.set_title(chapter["name"].ToString());
+                IList paragraphs = (IList)chapter["paragraphs"];
+
+                if (chapter["paragraphs"] != null)
+                {
+                    item_chapter.set_tip(paragraphs.Count + " " + this.bible.carrot.L("paragraph", "Paragraph"));
+                    item_chapter.set_act(() => View_paragraphs_page(chapter));
+                }
+
+                Carrot.Carrot_Box_Btn_Item btn_page = item_chapter.create_item();
+                btn_page.set_icon(bible.icon_book_open);
+                btn_page.set_act(() => View_paragraphs_page(chapter));
+                btn_page.set_color(bible.carrot.color_highlight);
+
+                Carrot.Carrot_Box_Btn_Item btn_list = item_chapter.create_item();
+                btn_list.set_icon(icon_list);
+                btn_list.set_act(() => View_paragraphs_list(chapter));
+                btn_list.set_color(bible.carrot.color_highlight);
+
+                if (this.IsEditor())
+                {
+                    Carrot_Box_Btn_Item btn_edit = item_chapter.create_item();
+                    btn_edit.set_icon(this.bible.carrot.user.icon_user_edit);
+                    btn_edit.set_icon_color(Color.white);
+                    btn_edit.set_color(this.bible.carrot.color_highlight);
+                    btn_edit.set_act(() =>
+                    {
+                        this.bible.carrot.play_sound_click();
+                        this.BoxEditOrAddParagraph(dataChapter, index_p);
+                    });
+
+                    Carrot_Box_Btn_Item btn_del = item_chapter.create_item();
+                    btn_del.set_icon(this.bible.carrot.sp_icon_del_data);
+                    btn_del.set_icon_color(Color.white);
+                    btn_del.set_color(Color.red);
+                    btn_del.set_act(() =>
+                    {
+                        this.bible.carrot.Show_msg("Delete Paragraph", "Are you sure you want to delete this '" + index_p + "' paragraphs?", () =>
+                        {
+
+                        });
+                    });
+                }
+            }
+        }
+
+        Carrot_Box_Btn_Panel panel = this.BoxChapterView.create_panel_btn();
 
         if (data["type_item"] != null)
         {
@@ -107,7 +212,68 @@ public class Manager_Book : MonoBehaviour
         btn_close.set_icon_white(bible.carrot.icon_carrot_cancel);
         btn_close.set_bk_color(bible.carrot.color_highlight);
         btn_close.set_label(this.bible.carrot.L("cancel", "Cancel"));
-        btn_close.set_act_click(() => box_list_chapter.close());
+        btn_close.set_act_click(() => this.BoxChapterView.close());
+    }
+
+    private void BoxEditOrAddParagraph(IDictionary dataChapter, int index_c)
+    {
+        Carrot_Box box_paragraphs = this.bible.carrot.Create_Box();
+        box_paragraphs.set_icon(this.bible.icon_paragraph);
+        box_paragraphs.set_title("Add Content");
+
+        if (dataChapter["paragraphs"] != null)
+        {
+            IList paragraphs = (IList)dataChapter["paragraphs"];
+            for (int i = 0; i < paragraphs.Count; i++)
+            {
+                string s_paragraph = paragraphs[i].ToString();
+                Carrot_Box_Item item_p = box_paragraphs.create_item();
+                item_p.set_icon(this.bible.icon_chapter);
+                item_p.set_type(Box_Item_Type.box_value_input);
+                item_p.set_title("Paragraph " + (i + 1));
+                item_p.set_tip(s_paragraph);
+                item_p.set_val(s_paragraph);
+
+                Carrot_Box_Btn_Item btn_del = item_p.create_item();
+                btn_del.set_icon(this.bible.carrot.sp_icon_del_data);
+                btn_del.set_icon_color(Color.white);
+                btn_del.set_color(Color.red);
+                btn_del.set_act(() =>
+                {
+
+                });
+            }
+        }
+
+        box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_add).set_act(() =>
+        {
+            int leng_p = box_paragraphs.area_all_item.childCount + 1;
+            Carrot_Box_Item item_p_new = box_paragraphs.create_item();
+            item_p_new.set_icon(this.bible.icon_chapter);
+            item_p_new.set_type(Box_Item_Type.box_value_input);
+            item_p_new.set_title("Paragraph " + leng_p);
+            item_p_new.set_tip("New Paragraph");
+        });
+
+        box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_done).set_act(() =>
+        {
+            IList book_contents = this.data_book_cur["contents"] as IList;
+            IDictionary chapterData = book_contents[index_c] as IDictionary;
+            IDictionary item_content = Json.Deserialize("{}") as IDictionary;
+            item_content["name"] = chapterData["name"].ToString();
+            item_content["tip"] = chapterData["tip"].ToString();
+            IList list_paragraphs = Json.Deserialize("[]") as IList;
+            foreach (Transform tr in box_paragraphs.area_all_item)
+            {
+                list_paragraphs.Add(tr.gameObject.GetComponent<Carrot_Box_Item>().get_val());
+            }
+            item_content["paragraphs"] = list_paragraphs;
+            book_contents[index_c] = item_content;
+            this.data_book_cur["contents"] = book_contents;
+            this.list_data_Bible[this.IndexBookEdit] = this.data_book_cur;
+            Debug.Log("index:" + this.IndexBookEdit + " s:" + Json.Serialize(item_content));
+            this.UpdateDataFile();
+        });
     }
 
     public void View_paragraphs_list(IDictionary chapter)
@@ -120,19 +286,62 @@ public class Manager_Book : MonoBehaviour
         IList paragraphs = (IList)chapter["paragraphs"];
         for (int i = 0; i < paragraphs.Count; i++)
         {
+            var index_item = i;
             string s_paragraph = paragraphs[i].ToString();
-            Carrot.Carrot_Box_Item item_p = box_paragraphs.create_item("p_" + i);
+            var s_txt = s_paragraph;
+            Carrot_Box_Item item_p = box_paragraphs.create_item("p_" + i);
             item_p.set_title(s_paragraph);
             item_p.set_tip("sentence " + (i + 1).ToString());
             item_p.set_icon(bible.icon_paragraph);
 
-            Carrot.Carrot_Box_Btn_Item btn_copy = item_p.create_item();
+            Carrot_Box_Btn_Item btn_copy = item_p.create_item();
             btn_copy.set_icon(bible.icon_copy);
             btn_copy.set_color(bible.carrot.color_highlight);
             btn_copy.set_act(() => Show_copy(s_paragraph));
+
+            Carrot_Box_Btn_Item btn_speech = item_p.create_item();
+            btn_speech.set_icon(bible.icon_speech);
+            btn_speech.set_color(bible.carrot.color_highlight);
+            btn_speech.set_act(() =>
+            {
+                this.Speak(s_txt, this.bible.carrot.lang.Get_key_lang());
+            });
+            
+            Carrot_Box_Btn_Item btn_del = item_p.create_item();
+            btn_del.set_icon(bible.carrot.sp_icon_del_data);
+            btn_del.set_color(Color.red);
+            btn_del.set_act(() =>
+            {
+                this.bible.carrot.play_sound_click();
+                paragraphs.RemoveAt(index_item);
+            });
         }
 
         Nav_page(box_paragraphs);
+    }
+
+    public void Speak(string text, string language = "en")
+    {
+        StartCoroutine(DownloadAndPlay(text, language));
+    }
+
+    IEnumerator DownloadAndPlay(string text, string language)
+    {
+        string url = $"https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q={UnityWebRequest.EscapeURL(text)}&tl={language}";
+
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error: " + www.error);
+        }
+        else
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            this.audioSpeaker.clip = clip;
+            this.audioSpeaker.Play();
+        }
     }
 
     public void View_paragraphs_page(IDictionary chapter)
@@ -229,9 +438,9 @@ public class Manager_Book : MonoBehaviour
         }
     }
 
-    public Carrot.Carrot_Box_Item Item_book(IDictionary data)
+    public Carrot_Box_Item Item_book(IDictionary data)
     {
-        Carrot.Carrot_Box_Item item_book = bible.Create_item();
+        Carrot_Box_Item item_book = bible.Create_item();
         if (data["name"] != null)
         {
             string s_type = data["type"].ToString();
@@ -296,5 +505,53 @@ public class Manager_Book : MonoBehaviour
 
         Carrot_Box_Item item_name = box_add.create_item();
         item_name.set_icon(this.bible.carrot.user.icon_user_name);
+        item_name.set_title("Name");
+        item_name.set_tip("Set name for book");
+        item_name.set_type(Box_Item_Type.box_value_input);
+
+        Carrot_Box_Item item_type = box_add.create_item();
+        item_type.set_icon(this.bible.carrot.icon_carrot_all_category);
+        item_type.set_title("Type");
+        item_type.set_tip("Set type for book");
+        item_type.set_type(Box_Item_Type.box_value_dropdown);
+        item_type.dropdown_val.ClearOptions();
+        item_type.dropdown_val.options.Add(new Dropdown.OptionData { text = "New" });
+        item_type.dropdown_val.options.Add(new Dropdown.OptionData { text = "Old" });
+        item_type.dropdown_val.value = 0;
+        item_type.dropdown_val.RefreshShownValue();
+
+        Carrot_Box_Item item_order = box_add.create_item();
+        item_order.set_icon(this.bible.carrot.user.icon_user_name);
+        item_order.set_title("Order");
+        item_order.set_tip("Set order for book");
+        item_order.set_type(Box_Item_Type.box_value_input);
+        item_order.set_val(this.list_data_Bible.Count.ToString());
+
+        box_add.CreatePanelCancelDone(() =>
+        {
+            IDictionary DataBookNew = Json.Deserialize("{}") as IDictionary;
+            DataBookNew["name"] = item_name.get_val();
+            if (item_type.dropdown_val.value == 0)
+                DataBookNew["type"] = "new_testament";
+            else
+                DataBookNew["type"] = "old_testament";
+            DataBookNew["order"] = item_order.get_val();
+            this.list_data_Bible.Add(DataBookNew);
+            this.UpdateDataFile();
+            this.bible.Add_loading_item();
+            this.bible.carrot.delay_function(1f, this.bible.show_list_book);
+        });
     }
+
+    public void UpdateDataFile()
+    {
+        FileBrowserHelpers.WriteTextToFile(System.IO.Path.Combine(this.s_path_data, "bible-" + this.bible.carrot.lang.Get_key_lang() + ".json"), Json.Serialize(this.list_data_Bible));
+    }
+
+    public void DeleteEbook(int index)
+    {
+        this.list_data_Bible.RemoveAt(index);
+        this.UpdateDataFile();
+    }
+
 }

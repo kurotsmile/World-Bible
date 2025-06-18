@@ -309,8 +309,8 @@ public class Bible : MonoBehaviour
 
         Carrot_Box_Item item_path = box_setting.create_item_of_top();
         item_path.set_icon(icon_path_file);
-        item_path.set_title(carrot.L("path_save", "Path save"));
-        item_path.set_tip(carrot.L("path_save_tip", "Path to save books and data"));
+        item_path.set_title(carrot.L("path_save", "Set data directory path"));
+        item_path.set_tip(carrot.L("path_save_tip", "Data editing path (data export and import)"));
         item_path.set_type(Box_Item_Type.box_value_txt);
         item_path.set_val(book.GetPathData());
         item_path.set_act(() =>
@@ -320,8 +320,19 @@ public class Bible : MonoBehaviour
                 this.book.SetPathData(s_path[0]);
                 item_path.set_val(s_path[0]);
                 PlayerPrefs.SetString("path_data", s_path[0]);
-                this.carrot.Show_msg(this.carrot.L("app_title", "Bible world"), this.carrot.L("path_save_success", "Path saved successfully!"));
-                FileBrowserHelpers.WriteTextToFile(System.IO.Path.Combine(s_path[0], "bible-"+this.carrot.lang.Get_key_lang()+".json"), Json.Serialize(this.book.list_data_Bible));
+                
+                string s_path_file = System.IO.Path.Combine(s_path[0], "bible-" + this.carrot.lang.Get_key_lang() + ".json");
+                if (FileBrowserHelpers.FileExists(s_path_file))
+                {
+                    string s_data = FileBrowserHelpers.ReadTextFromFile(s_path_file);
+                    this.Load_list_by_data(s_data);
+                    this.carrot.Show_msg(this.carrot.L("app_title", "Bible world"), this.carrot.L("path_save_success", "Path saved successfully!"));
+                }
+                else
+                {
+                    FileBrowserHelpers.WriteTextToFile(s_path_file, Json.Serialize(this.book.list_data_Bible));
+                    this.carrot.Show_msg(this.carrot.L("app_title", "Bible world"), this.carrot.L("path_save_success", "Path saved successfully!"));
+                }
             });
         });
     }

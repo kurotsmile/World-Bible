@@ -2508,6 +2508,8 @@ MonoBehaviour:
   icon_copy: {fileID: 21300000, guid: 6c94a1a7dc8afd347976ec0a0a97a6e9, type: 3}
   icon_path_file: {fileID: 21300000, guid: 640de362990b3754a94563de562306ad, type: 3}
   icon_speech: {fileID: 21300000, guid: 0c988af2d2de25d4a8d1365bd9c3b469, type: 3}
+  icon_up: {fileID: 21300000, guid: 30d225908f7d2034698ab0f7238fe253, type: 3}
+  icon_down: {fileID: 21300000, guid: bd3bd97797131904a9f8fe4c27966023, type: 3}
   sound_click_clip: {fileID: 8300000, guid: 0459c777a820feb4d93bea3c12782754, type: 3}
   color_row_a:
     serializedVersion: 2

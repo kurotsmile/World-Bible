@@ -39,6 +39,8 @@ public class Bible : MonoBehaviour
     public Sprite icon_copy;
     public Sprite icon_path_file;
     public Sprite icon_speech;
+    public Sprite icon_up;
+    public Sprite icon_down;
     public AudioClip sound_click_clip;
 
     [Header("Color")]
@@ -71,7 +73,7 @@ public class Bible : MonoBehaviour
             Act_load("");
     }
 
-    private void Act_load(string s_data)
+    public void Act_load(string s_data="")
     {
         this.Add_loading_item();
         this.carrot.delay_function(1f, menu.load);
@@ -157,10 +159,10 @@ public class Bible : MonoBehaviour
         {
             var index_data = i;
             IDictionary data = this.book.list_data_Bible[i] as IDictionary;
-
+            var bookData = data;
             Carrot_Box_Item item_book = book.Item_book(data);
             item_book.set_act(() => book.View(data,index_data));
-
+            data["index_data"] = index_data;
             if (data["type"] != null)
             {
                 string s_type_book = data["type"].ToString();
@@ -185,6 +187,16 @@ public class Bible : MonoBehaviour
 
             if (book.IsEditor())
             {
+                Carrot_Box_Btn_Item btn_edit = item_book.create_item();
+                btn_edit.set_icon(this.carrot.user.icon_user_edit);
+                btn_edit.set_icon_color(Color.white);
+                btn_edit.set_color(this.carrot.color_highlight);
+                btn_edit.set_act(()=>
+                {
+                    this.carrot.play_sound_click();
+                    this.book.ShowAddBook(bookData);
+                });
+
                 Carrot_Box_Btn_Item btn_del = item_book.create_item();
                 btn_del.set_icon(this.carrot.sp_icon_del_data);
                 btn_del.set_icon_color(Color.white);

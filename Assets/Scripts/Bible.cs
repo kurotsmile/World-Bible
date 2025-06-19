@@ -41,7 +41,10 @@ public class Bible : MonoBehaviour
     public Sprite icon_speech;
     public Sprite icon_up;
     public Sprite icon_down;
+
+    [Header("Sound")]
     public AudioClip sound_click_clip;
+    public AudioSource soundBk;
 
     [Header("Color")]
     public Color32 color_row_a;
@@ -58,7 +61,13 @@ public class Bible : MonoBehaviour
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         carrot.Load_Carrot();
         carrot.change_sound_click(sound_click_clip);
+        carrot.game.load_bk_music(this.soundBk);
+        this.ads.On_Load();
 
+        this.carrot.act_buy_ads_success = this.ads.RemoveAds;
+        this.carrot.game.act_click_watch_ads_in_music_bk = this.ads.ShowRewardedVideo;
+        this.ads.onRewardedSuccess = this.carrot.game.OnRewardedSuccess;
+        
         book.OnLoad();
         offline.On_load();
 

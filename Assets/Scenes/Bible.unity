@@ -2619,6 +2619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03c416830ab371346afb8bd821b27291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carrot: {fileID: 521575782}
   count_step_show_interstitial: 5
   emplement_Ads: []
   app_key: 226e5fe6d

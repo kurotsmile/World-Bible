@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class IronSourceAds : MonoBehaviour
 {
     [Header("Config General")]
+    public Carrot.Carrot carrot;
     public int count_step_show_interstitial = 5;
     private int count_step = 0;
 
@@ -30,11 +31,14 @@ public class IronSourceAds : MonoBehaviour
 
         if (this.is_ads)
         {
-            IronSource.Agent.validateIntegration();
-            LevelPlay.Init(this.app_key,adFormats:new []{LevelPlayAdFormat.REWARDED});
+            if (carrot.os_app == Carrot.OS.Android)
+            {
+                IronSource.Agent.validateIntegration();
+                LevelPlay.Init(this.app_key, adFormats: new[] { LevelPlayAdFormat.REWARDED });
 
-            LevelPlay.OnInitSuccess += SdkInitializationCompletedEvent;
-            LevelPlay.OnInitFailed += SdkInitializationFailedEvent;
+                LevelPlay.OnInitSuccess += SdkInitializationCompletedEvent;
+                LevelPlay.OnInitFailed += SdkInitializationFailedEvent;
+            }
         }
         this.Check_Emplement_Ads();
     }
@@ -207,8 +211,11 @@ public class IronSourceAds : MonoBehaviour
             this.count_step++;
             if (this.count_step > this.count_step_show_interstitial)
             {
-                this.count_step=0;
-                this.ShowInterstitialAd();
+                this.count_step = 0;
+                if (carrot.os_app == Carrot.OS.Android)
+                    this.ShowInterstitialAd();
+                else
+                    carrot.ShowAds();
             }
         }
     }

@@ -130,7 +130,15 @@ public class Bible : MonoBehaviour
         else
         {
             TextAsset bible_data_text = Resources.Load<TextAsset>("bible_" + this.carrot.lang.Get_key_lang());
-            this.Load_list_by_data(bible_data_text.text);
+            if (bible_data_text != null)
+            {
+                this.Load_list_by_data(bible_data_text.text);
+            }
+            else
+            {
+                Debug.Log("No data " + carrot.lang.Get_key_lang());
+                this.Load_list_by_data("[]");
+            }
         }
     }
 

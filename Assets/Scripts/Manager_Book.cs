@@ -278,6 +278,10 @@ public class Manager_Book : MonoBehaviour
             item_p_new.set_title("Paragraph " + leng_p);
             item_p_new.set_tip("New Paragraph");
             this.AddBtnDelParagraphItem(item_p_new);
+            bible.carrot.delay_function(1f, () =>
+            {
+                box_paragraphs.UI.scrollRect.verticalNormalizedPosition = 0f; 
+            });
         });
 
         box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_done).set_act(() =>
@@ -289,26 +293,34 @@ public class Manager_Book : MonoBehaviour
             IList list_paragraphs = Json.Deserialize("[]") as IList;
             foreach (Transform tr in box_paragraphs.area_all_item)
             {
-                list_paragraphs.Add(tr.gameObject.GetComponent<Carrot_Box_Item>().get_val());
+                string val = tr.gameObject.GetComponent<Carrot_Box_Item>().get_val();
+                val = val.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Trim();
+                list_paragraphs.Add(val);
             }
             item_content["paragraphs"] = list_paragraphs;
             book_contents[index_c] = item_content;
             this.data_book_cur["contents"] = book_contents;
             this.list_data_Bible[this.IndexBookEdit] = this.data_book_cur;
             this.UpdateDataFile();
-            this.bible.carrot.Show_msg("Update book " + this.data_book_cur["name"].ToString() + " success!");
+            BoxMsg=this.bible.carrot.Show_msg("Update book " + this.data_book_cur["name"].ToString() + " success!");
+            if (box_paragraphs != null) box_paragraphs.close();
+            bible.carrot.delay_function(1.5f, () =>
+            {
+                if (BoxMsg != null) BoxMsg.close();
+                bible.book.View(this.data_book_cur,this.IndexBookEdit);
+            });
         });
     }
 
     private Carrot_Box_Btn_Item AddBtnDelParagraphItem(Carrot_Box_Item item_p)
     {
         item_p.create_item().set_icon(this.bible.icon_up).set_act(() =>
-{
-    int indexCur = item_p.transform.GetSiblingIndex();
-    indexCur--;
-    item_p.transform.SetSiblingIndex(indexCur);
-    this.bible.carrot.play_sound_click();
-});
+        {
+            int indexCur = item_p.transform.GetSiblingIndex();
+            indexCur--;
+            item_p.transform.SetSiblingIndex(indexCur);
+            this.bible.carrot.play_sound_click();
+        });
 
         item_p.create_item().set_icon(this.bible.icon_down).set_act(() =>
         {
@@ -328,6 +340,7 @@ public class Manager_Book : MonoBehaviour
         });
         return btn_del;
     }
+
     public void View_paragraphs_list(IDictionary chapter)
     {
         index_show_chapter = int.Parse(chapter["index"].ToString());
@@ -398,13 +411,22 @@ public class Manager_Book : MonoBehaviour
         string s_page = "";
         for (int i = 0; i < paragraphs.Count; i++)
         {
-            s_page = s_page + paragraphs[i].ToString() + " ";
-        }
+            s_page = s_page +(i+1)+" "+ paragraphs[i].ToString() + " ";
+        } 
 
         GameObject obj_txt;
-        if (bible.carrot.lang.Get_key_lang() == "ko") obj_txt = Instantiate(bible.prefab_paragraph_item_ko);
-        else if (bible.carrot.lang.Get_key_lang() == "zh") obj_txt = Instantiate(bible.prefab_paragraph_item_zh);
-        else obj_txt = Instantiate(bible.prefab_paragraph_item);
+        if (bible.carrot.lang.Get_key_lang() == "ko")
+        {
+            obj_txt = Instantiate(bible.prefab_paragraph_item_ko);
+        }
+        else if (bible.carrot.lang.Get_key_lang() == "zh-CN")
+        {
+            obj_txt = Instantiate(bible.prefab_paragraph_item_zh);
+        }
+        else
+        {
+            obj_txt = Instantiate(bible.prefab_paragraph_item);
+        }
 
         textPro = obj_txt.GetComponent<TextMeshProUGUI>();
         textPro.text = s_page;
@@ -596,6 +618,7 @@ public class Manager_Book : MonoBehaviour
                 int index_data = int.Parse(dataBookEdit["index_data"].ToString());
                 this.list_data_Bible[index_data] = DataBookNew;
                 this.bible.carrot.Show_msg("Update bible " + this.data_book_cur["name"].ToString() + " success!");
+                box_add.close();
             }
             else
             {

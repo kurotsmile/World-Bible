@@ -30,9 +30,10 @@ public class Manager_Menu : MonoBehaviour
     public void select_menu(int index)
     {
         this.Select_Menu_No_func(index);
-        if (index == 0) this.bible.show_list_book();
-        if (index == 1) this.bible.offline.show();
-        if (index == 2) this.bible.search.list();
+        if (index == 0) this.bible.ShowHome();
+        if (index == 1) this.bible.ShowListBook();
+        if (index == 2) this.bible.offline.show();
+        if (index == 3) this.bible.search.list();
     }
 
     public void Select_Menu_No_func(int index)

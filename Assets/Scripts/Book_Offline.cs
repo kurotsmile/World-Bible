@@ -30,6 +30,8 @@ public class Book_Offline : MonoBehaviour
 
     public void show()
     {
+        bible.panelHome.SetActive(false);
+        bible.panelMain.SetActive(true);
         this.bible.Add_loading_item();
         this.bible.carrot.delay_function(1.2f, this.list);
     }

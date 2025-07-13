@@ -26,6 +26,11 @@ public class Bible : MonoBehaviour
     public GameObject prefab_paragraph_item_ko;
     public GameObject prefab_paragraph_item_zh;
 
+    [Header("Ui")]
+    public Text txtPassage;
+    public GameObject panelHome;
+    public GameObject panelMain;
+
     public Sprite icon_book_old_testament;
     public Sprite icon_book_new_Testament;
     public Sprite icon_book_save;
@@ -67,8 +72,7 @@ public class Bible : MonoBehaviour
         this.carrot.act_buy_ads_success = this.ads.RemoveAds;
         this.carrot.game.act_click_watch_ads_in_music_bk = this.ads.ShowRewardedVideo;
         this.ads.onRewardedSuccess = this.carrot.game.OnRewardedSuccess;
-        
-        book.OnLoad();
+
         offline.On_load();
 
         if (this.carrot.os_app == OS.Window)
@@ -80,12 +84,18 @@ public class Bible : MonoBehaviour
             carrot.Show_list_lang(Act_load);
         else
             Act_load("");
+
+        this.panelHome.SetActive(true);
+        this.panelMain.SetActive(false);
     }
 
-    public void Act_load(string s_data="")
+    public void Act_load(string s_data = "")
     {
         this.Add_loading_item();
-        this.carrot.delay_function(1f, menu.load);
+        this.carrot.delay_function(1f, ()=> {
+            book.OnLoad();
+            menu.load();
+        });
     }
 
     void Update()
@@ -108,155 +118,18 @@ public class Bible : MonoBehaviour
         carrot.Show_list_lang(Act_load);
     }
 
-    public void show_list_book()
+    public void ShowListBook(string Stype="")
     {
-        string PathFileData = this.book.GetPathData() + "/bible-" + this.carrot.lang.Get_key_lang() + ".json";
-        if (this.book.IsEditor())
-        {
-            if (FileBrowserHelpers.FileExists(PathFileData))
-            {
-                string sData = FileBrowserHelpers.ReadTextFromFile(PathFileData);
-                this.Load_list_by_data(sData);
-            }
-            else
-            {
-                TextAsset bible_data_text = Resources.Load<TextAsset>("bible_" + this.carrot.lang.Get_key_lang());
-                if (bible_data_text==null)
-                    this.Load_list_by_data("");
-                else
-                    this.Load_list_by_data(bible_data_text.text);
-            }  
-        }
-        else
-        {
-            TextAsset bible_data_text = Resources.Load<TextAsset>("bible_" + this.carrot.lang.Get_key_lang());
-            if (bible_data_text != null)
-            {
-                this.Load_list_by_data(bible_data_text.text);
-            }
-            else
-            {
-                Debug.Log("No data " + carrot.lang.Get_key_lang());
-                this.Load_list_by_data("[]");
-            }
-        }
+        this.panelHome.SetActive(false);
+        this.panelMain.SetActive(true);
+        this.book.ShowList(Stype);
     }
 
-    private IList SortListByOrderKey(IList list)
+    public IList SortListByOrderKey(IList list)
     {
         var dictList = list.Cast<IDictionary>().ToList();
         var sorted = dictList.OrderBy(d => System.Convert.ToInt32(d["order"])).ToList();
         return sorted;
-    }
-
-    private void Load_list_by_data(string s_data)
-    {
-        carrot.clear_contain(tr_all_item_book);
-
-        if(s_data=="")
-            this.book.list_data_Bible = Json.Deserialize("[]") as IList;
-        else
-            this.book.list_data_Bible = Json.Deserialize(s_data) as IList;
-        this.book.list_data_Bible = SortListByOrderKey(this.book.list_data_Bible);
-
-        IList list_book_Old_testament = (IList)Json.Deserialize("[]");
-        Carrot_Box_Item item_Bible_Old = add_title(this.carrot.L("old_testament", "Old testament"));
-        item_Bible_Old.set_icon_white(icon_book_old_testament);
-        item_Bible_Old.set_tip("Old testament");
-        item_Bible_Old.GetComponent<Image>().color = this.color_row_title_a;
-
-        IList list_book_New_testament = (IList)Json.Deserialize("[]");
-        Carrot_Box_Item item_Bible_New = add_title(this.carrot.L("new_testament", "New Testament"));
-        item_Bible_New.set_icon_white(icon_book_new_Testament);
-        item_Bible_New.set_tip("New Testament");
-        item_Bible_New.GetComponent<Image>().color = this.color_row_title_b;
-
-        int index_item = 0;
-        for (int i = 0; i < this.book.list_data_Bible.Count; i++)
-        {
-            var index_data = i;
-            IDictionary data = this.book.list_data_Bible[i] as IDictionary;
-            var bookData = data;
-            Carrot_Box_Item item_book = book.Item_book(data);
-            item_book.set_act(() => book.View(data,index_data));
-            data["index_data"] = index_data;
-            if (data["type"] != null)
-            {
-                string s_type_book = data["type"].ToString();
-                if (s_type_book == "old_testament")
-                    list_book_Old_testament.Add(data);
-                else
-                    list_book_New_testament.Add(data);
-            }
-
-            if (index_item % 2 == 0)
-                item_book.gameObject.GetComponent<Image>().color = color_row_a;
-            else
-                item_book.gameObject.GetComponent<Image>().color = color_row_b;
-
-            item_book.gameObject.name = data["type"].ToString();
-
-            Carrot_Box_Btn_Item btn_save = item_book.create_item();
-            btn_save.set_icon(icon_book_save);
-            btn_save.set_icon_color(Color.white);
-            btn_save.set_color(carrot.color_highlight);
-            btn_save.set_act(() => offline.Add(data));
-
-            if (book.IsEditor())
-            {
-                Carrot_Box_Btn_Item btn_edit = item_book.create_item();
-                btn_edit.set_icon(this.carrot.user.icon_user_edit);
-                btn_edit.set_icon_color(Color.white);
-                btn_edit.set_color(this.carrot.color_highlight);
-                btn_edit.set_act(()=>
-                {
-                    this.carrot.play_sound_click();
-                    this.book.ShowAddBook(bookData);
-                });
-
-                Carrot_Box_Btn_Item btn_del = item_book.create_item();
-                btn_del.set_icon(this.carrot.sp_icon_del_data);
-                btn_del.set_icon_color(Color.white);
-                btn_del.set_color(Color.red);
-                btn_del.set_act(()=>
-                {
-                    this.carrot.Show_msg("Delete Book", "Are you sure you want to delete this '" + data["name"].ToString() + "' book?",()=>
-                    {
-                        this.book.DeleteEbook(index_data);
-                        this.Act_load("");
-                    });
-                });
-            }
-
-            index_item++;
-        }
-
-        if (this.book.IsEditor())
-        {
-            Carrot_Box_Item item_add_book = this.Create_item();
-            item_add_book.set_icon_white(carrot.icon_carrot_add);
-            item_add_book.set_title("Add Book");
-            item_add_book.set_tip("Add new a Book");
-            item_add_book.txt_tip.color = Color.black;
-            item_add_book.gameObject.GetComponent<Image>().color = carrot.color_highlight;
-            item_add_book.set_act(() =>
-            {
-                this.carrot.play_sound_click();
-                this.book.ShowAddBook();
-            });
-        }
-
-        item_Bible_Old.set_tip(list_book_Old_testament.Count + " " + this.carrot.L("book", "Book"));
-        Carrot_Box_Btn_Item btn_list_old = item_Bible_Old.create_item();
-        btn_list_old.set_icon(book.icon_list);
-        Destroy(btn_list_old.GetComponent<Button>());
-        item_Bible_Old.set_act(() => book.Show_list_book_by_type("old_testament"));
-
-        item_Bible_New.set_tip(list_book_New_testament.Count + " " + this.carrot.L("book", "Book"));
-        Carrot_Box_Btn_Item btn_list_new = item_Bible_New.create_item();
-        btn_list_new.set_icon(book.icon_list);
-        Destroy(btn_list_new.GetComponent<Button>());
-        item_Bible_New.set_act(() => book.Show_list_book_by_type("new_testament"));
     }
 
     public Carrot_Box_Item Create_item()
@@ -267,7 +140,7 @@ public class Bible : MonoBehaviour
         obj_item.transform.localScale = new Vector3(1f, 1f, 1f);
         obj_item.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
-       Carrot_Box_Item item_box = obj_item.GetComponent<Carrot_Box_Item>();
+        Carrot_Box_Item item_box = obj_item.GetComponent<Carrot_Box_Item>();
         item_box.on_load(carrot);
         item_box.check_type();
         return item_box;
@@ -337,12 +210,12 @@ public class Bible : MonoBehaviour
                 this.book.SetPathData(s_path[0]);
                 item_path.set_val(s_path[0]);
                 PlayerPrefs.SetString("path_data", s_path[0]);
-                
+
                 string s_path_file = System.IO.Path.Combine(s_path[0], "bible-" + this.carrot.lang.Get_key_lang() + ".json");
                 if (FileBrowserHelpers.FileExists(s_path_file))
                 {
                     string s_data = FileBrowserHelpers.ReadTextFromFile(s_path_file);
-                    this.Load_list_by_data(s_data);
+                    this.book.Load_list_by_data(s_data);
                     this.carrot.Show_msg(this.carrot.L("app_title", "Bible world"), this.carrot.L("path_save_success", "Path saved successfully!"));
                 }
                 else
@@ -352,5 +225,30 @@ public class Bible : MonoBehaviour
                 }
             });
         });
+    }
+
+    public void ShowHome()
+    {
+        this.panelHome.SetActive(true);
+        this.panelMain.SetActive(false);
+        this.txtPassage.text = this.book.GetPassage();
+    }
+
+    public void BtnShowNewPassage()
+    {
+        carrot.play_sound_click();
+        book.GetAndShowNewPassage();
+    }
+
+    public void BtnShowBibleNew()
+    {
+        carrot.play_sound_click();
+        ShowListBook("new_testament");
+    }
+
+    public void BtnShowBibleOld()
+    {
+        carrot.play_sound_click();
+        ShowListBook("old_testament");
     }
 }

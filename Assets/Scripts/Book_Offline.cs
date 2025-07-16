@@ -114,9 +114,29 @@ public class Book_Offline : MonoBehaviour
         boxHistory.set_icon(bible.icon_history);
         boxHistory.set_title("Recently Read");
 
-        for (int i = 0; i < lengthHistory; i++)
+        boxHistory.create_btn_menu_header(bible.carrot.sp_icon_del_data).set_act(() =>
         {
-            
+            for (int i = 0; i < lengthHistory; i++) PlayerPrefs.DeleteKey("h_" + i);
+            PlayerPrefs.SetInt("lengthHistory", 0);
+            boxHistory.close();
+        });
+
+        for (int i = (lengthHistory - 1); i >= 0; i--)
+        {
+            string sData = PlayerPrefs.GetString("h_" + i, "");
+            if (sData != "")
+            {
+                IDictionary dataH = Json.Deserialize(sData) as IDictionary;
+                Carrot_Box_Item itemHistory = boxHistory.create_item();
+                itemHistory.set_icon(bible.icon_history_item);
+                itemHistory.set_title(dataH["name"].ToString());
+                itemHistory.set_tip(dataH["date"].ToString());
+                itemHistory.set_act(() =>
+                {
+                    int indexBook = int.Parse(dataH["index"].ToString());
+                    bible.book.View(bible.book.list_data_Bible[indexBook] as IDictionary, indexBook);
+                });
+            }
         }
     }
 }

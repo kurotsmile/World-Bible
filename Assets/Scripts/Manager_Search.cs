@@ -50,11 +50,12 @@ public class Manager_Search : MonoBehaviour
         btn_clear.set_act(() => this.list());
 
         int count_found = 0;
+        string sKeyWord = s_key.ToLower();
 
         for (int i = 0; i < bible.book.list_data_Bible.Count; i++)
         {
             IDictionary data = bible.book.list_data_Bible[i] as IDictionary;
-            if (data["name"].ToString().Contains(s_key))
+            if (data["name"].ToString().ToLower().Contains(sKeyWord))
             {
                 data["title"] = data["name"].ToString();
                 data["tip"] = this.bible.carrot.L("book", "Book") + " (" + data["name"].ToString() + ")";
@@ -71,7 +72,7 @@ public class Manager_Search : MonoBehaviour
                 IList paragraphs = (IList)chapter["paragraphs"];
                 for (int z = 0; z < paragraphs.Count; z++)
                 {
-                    if (paragraphs[z].ToString().Contains(s_key))
+                    if (paragraphs[z].ToString().ToLower().Contains(sKeyWord))
                     {
                         data["title"] = paragraphs[z].ToString();
                         data["tip"] = this.bible.carrot.L("book", "Book") + " (" + data["name"].ToString() + ") -> " + this.bible.carrot.L("chapter", "Chapter") + " : " + (y + 1) + " -> " + this.bible.carrot.L("paragraph", "Paragraph") + " (" + (z + 1) + ")";

@@ -528,6 +528,16 @@ public class Manager_Book : MonoBehaviour
         return btn_del;
     }
 
+    public void View_paragraphs_list(int indexBook, int indexChapter)
+    {
+        this.IndexBookEdit = indexBook;
+        this.data_book_cur=list_data_Bible[indexBook] as IDictionary;
+        IList contents = (IList)data_book_cur["contents"];
+        IDictionary chapter = (IDictionary)contents[indexChapter];
+        chapter["index"] = indexChapter;
+        View_paragraphs_list(chapter);
+    }
+
     public void View_paragraphs_list(IDictionary chapter)
     {
         index_show_chapter = int.Parse(chapter["index"].ToString());
@@ -543,7 +553,7 @@ public class Manager_Book : MonoBehaviour
             var s_txt = s_paragraph;
             Carrot_Box_Item item_p = box_paragraphs.create_item("p_" + i);
             item_p.set_title(s_paragraph);
-            item_p.set_tip("sentence " + (i + 1).ToString());
+            item_p.set_tip(bible.carrot.L("sentence","Sentence")+" "+ (i + 1).ToString());
             item_p.set_icon(bible.icon_paragraph);
 
             Carrot_Box_Btn_Item btn_copy = item_p.create_item();
@@ -736,10 +746,16 @@ public class Manager_Book : MonoBehaviour
 
     public void ShowAddBook(IDictionary dataBookEdit = null)
     {
-        if (dataBookEdit != null) this.data_book_cur = dataBookEdit;
-
         Carrot_Box box_add = this.bible.carrot.Create_Box();
-        box_add.set_title("Add Book");
+        if (dataBookEdit != null)
+        {
+            this.data_book_cur = dataBookEdit;
+            box_add.set_title("Update Book ("+this.data_book_cur["name"].ToString()+")");
+        }
+        else
+        {
+            box_add.set_title("Add Book");
+        }
         box_add.set_icon(this.bible.carrot.icon_carrot_add);
 
         Carrot_Box_Item item_name = box_add.create_item();
@@ -778,7 +794,7 @@ public class Manager_Book : MonoBehaviour
         box_add.CreatePanelCancelDone(() =>
         {
             IDictionary DataBookNew = Json.Deserialize("{}") as IDictionary;
-            DataBookNew["name"] = item_name.get_val();
+            DataBookNew["name"] = item_name.get_val(); 
             if (item_type.dropdown_val.value == 0)
                 DataBookNew["type"] = "new_testament";
             else
@@ -787,6 +803,7 @@ public class Manager_Book : MonoBehaviour
 
             if (dataBookEdit != null)
             {
+                DataBookNew["contents"] = data_book_cur["contents"];
                 int index_data = int.Parse(dataBookEdit["index_data"].ToString());
                 this.list_data_Bible[index_data] = DataBookNew;
                 this.bible.carrot.Show_msg("Update bible " + this.data_book_cur["name"].ToString() + " success!");
@@ -813,28 +830,42 @@ public class Manager_Book : MonoBehaviour
         this.UpdateDataFile();
     }
 
-    public string GetPassage()
+    public IDictionary GetPassage()
     {
-        string sPassage = "";
+        IDictionary Passage = Json.Deserialize("{}") as IDictionary;
 
+        string sPassage = "";
+        string sLocation = "";
+        int indexBook = 0;
+        int indexContent = 0;
         if (this.list_data_Bible.Count > 0)
         {
-            int indexRandBook = UnityEngine.Random.Range(0, this.list_data_Bible.Count);
-            IDictionary dataBook = list_data_Bible[indexRandBook] as IDictionary;
+            indexBook = UnityEngine.Random.Range(0, this.list_data_Bible.Count);
+            IDictionary dataBook = list_data_Bible[indexBook] as IDictionary;
             IList listContents = dataBook["contents"] as IList;
-            int indexContent = UnityEngine.Random.Range(0, listContents.Count);
+            indexContent= UnityEngine.Random.Range(0, listContents.Count);
             IDictionary cContent = listContents[indexContent] as IDictionary;
             IList paragraphs = cContent["paragraphs"] as IList;
             int indexP = UnityEngine.Random.Range(0, paragraphs.Count);
             sPassage = paragraphs[indexP].ToString();
+            sLocation += dataBook["name"].ToString() + " - " + (indexContent + 1) + "," + (indexP + 1);
+            bible.txtPassageLocation.text = sLocation;
         }
-        return sPassage;
+        Passage["text"] = sPassage;
+        Passage["location"] = sLocation;
+        Passage["indexBook"] = indexBook;
+        Passage["indexContent"] = indexContent;
+        return Passage;
     }
 
     public void GetAndShowNewPassage()
     {
-        string msgPassage = this.GetPassage();
-        if(msgPassage!="") bible.carrot.Show_msg(bible.carrot.L("bible_passage","Bible passage"),msgPassage);
+        IDictionary dataPassage = this.GetPassage();
+        string msgPassage = dataPassage["text"].ToString();
+        msgPassage += "\n\n" + dataPassage["location"].ToString();
+        if (msgPassage != "") bible.carrot.Show_msg(bible.carrot.L("bible_passage", "Bible passage"), msgPassage);
+        bible.txtPassage.text = dataPassage["text"].ToString();
+        bible.txtPassageLocation.text=dataPassage["location"].ToString();
     }
 
 }

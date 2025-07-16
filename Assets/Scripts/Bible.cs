@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Bible : MonoBehaviour
@@ -30,6 +31,7 @@ public class Bible : MonoBehaviour
     public Text TxtValCountOldBible;
     public Text TxtValCountNewBible;
     public Text txtPassage;
+    public Text txtPassageLocation;
     public GameObject panelHome;
     public GameObject panelMain;
 
@@ -49,7 +51,7 @@ public class Bible : MonoBehaviour
     public Sprite icon_up;
     public Sprite icon_down;
     public Sprite icon_history;
-
+    public Sprite icon_history_item;
 
     [Header("Sound")]
     public AudioClip sound_click_clip;
@@ -64,6 +66,7 @@ public class Bible : MonoBehaviour
 
     [Header("Ads")]
     float timer_ads = 400.0f;
+    private UnityAction actClickPassage;
 
     void Start()
     {
@@ -235,9 +238,23 @@ public class Bible : MonoBehaviour
     {
         this.panelHome.SetActive(true);
         this.panelMain.SetActive(false);
-        this.txtPassage.text = this.book.GetPassage();
+        IDictionary dataPassage = this.book.GetPassage();
+        txtPassage.text = dataPassage["text"].ToString();
+        txtPassageLocation.text = dataPassage["location"].ToString();
+        actClickPassage = () =>
+        {
+            int indexBook=int.Parse(dataPassage["indexBook"].ToString());
+            int indexContent=int.Parse(dataPassage["indexContent"].ToString());
+            book.View_paragraphs_list(indexBook,indexContent);
+        };
         this.TxtValCountNewBible.text = this.book.GetLengthBibleByType("new_testament").ToString()+" "+carrot.L("book","Book");
         this.TxtValCountOldBible.text = this.book.GetLengthBibleByType("old_testament").ToString()+" "+carrot.L("book","Book");
+    }
+
+    public void BtnShowInfoPassage()
+    {
+        carrot.play_sound_click();
+        actClickPassage.Invoke();
     }
 
     public void BtnShowNewPassage()

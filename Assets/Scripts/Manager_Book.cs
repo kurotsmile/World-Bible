@@ -1,6 +1,8 @@
 using Carrot;
 using SimpleFileBrowser;
+using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -24,7 +26,6 @@ public class Manager_Book : MonoBehaviour
     private Carrot_Window_Msg BoxMsg = null;
     private Carrot_Window_Input BoxInp = null;
     private bool type_view_page = false;
-    private int IndexContentEdit = -1;
     private int IndexBookEdit = -1;
     private int index_show_chapter = -1;
     private string s_path_data = "";
@@ -80,7 +81,18 @@ public class Manager_Book : MonoBehaviour
         this.list_data_Bible = bible.SortListByOrderKey(this.list_data_Bible);
     }
 
-    public void ShowList(string sType="")
+    public int GetLengthBibleByType(string sType = "old_testament")
+    {
+        int count = 0;
+        for (int i = 0; i < bible.book.list_data_Bible.Count; i++)
+        {
+            IDictionary data = bible.book.list_data_Bible[i] as IDictionary;
+            if (data["type"].ToString() == sType) count++;
+        }
+        return count;
+    }
+
+    public void ShowList(string sType = "")
     {
         bible.carrot.clear_contain(bible.tr_all_item_book);
         IList list_book_Old_testament = (IList)Json.Deserialize("[]");
@@ -118,7 +130,14 @@ public class Manager_Book : MonoBehaviour
             }
 
             Carrot_Box_Item item_book = bible.book.Item_book(data);
-            item_book.set_act(() => bible.book.View(data, index_data));
+            item_book.set_act(() => {
+                IDictionary dataHistory=Json.Deserialize("{}") as IDictionary;
+                dataHistory["name"] = bookData["name"].ToString();
+                dataHistory["date"] = DateTime.Now.ToString();
+                dataHistory["index"] = index_data.ToString();
+                bible.offline.AddHistory(dataHistory);
+                bible.book.View(data, index_data);
+            });
             if (index_item % 2 == 0)
                 item_book.gameObject.GetComponent<Image>().color = bible.color_row_a;
             else
@@ -390,7 +409,7 @@ public class Manager_Book : MonoBehaviour
     {
         Carrot_Box box_paragraphs = this.bible.carrot.Create_Box();
         box_paragraphs.set_icon(this.bible.icon_paragraph);
-        box_paragraphs.set_title("Add Content");
+        box_paragraphs.set_title("Add Content ("+dataChapter["name"].ToString()+")");
 
         if (dataChapter["paragraphs"] != null)
         {
@@ -453,6 +472,29 @@ public class Manager_Book : MonoBehaviour
             {
                 if (BoxMsg != null) BoxMsg.close();
                 bible.book.View(this.data_book_cur, this.IndexBookEdit);
+            });
+        });
+
+        
+        box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_write).set_act(() =>
+        {
+            Carrot_Window_Input inp=bible.carrot.Show_input("Text", "Enter Content");
+            inp.set_act_done(sText =>
+            {
+                var matches = Regex.Matches(sText, @"(?<id>\d+)(?<text>\p{L}[\s\S]*?)(?=\d+\p{L}|$)");
+                foreach (Match match in matches)
+                {
+                    string text = match.Groups["text"].Value.Trim();
+                    string indexC = match.Groups["id"].Value;
+                    Carrot_Box_Item item_p_new = box_paragraphs.create_item();
+                    item_p_new.set_icon(this.bible.icon_chapter);
+                    item_p_new.set_type(Box_Item_Type.box_value_input);
+                    item_p_new.set_title("Paragraph " + indexC);
+                    item_p_new.set_tip("New Paragraph");
+                    item_p_new.set_val(text);
+                    this.AddBtnDelParagraphItem(item_p_new);
+                }
+                inp.close();
             });
         });
     }
@@ -777,13 +819,13 @@ public class Manager_Book : MonoBehaviour
 
         if (this.list_data_Bible.Count > 0)
         {
-            int indexRandBook = Random.Range(0, this.list_data_Bible.Count);
+            int indexRandBook = UnityEngine.Random.Range(0, this.list_data_Bible.Count);
             IDictionary dataBook = list_data_Bible[indexRandBook] as IDictionary;
             IList listContents = dataBook["contents"] as IList;
-            int indexContent = Random.Range(0, listContents.Count);
+            int indexContent = UnityEngine.Random.Range(0, listContents.Count);
             IDictionary cContent = listContents[indexContent] as IDictionary;
             IList paragraphs = cContent["paragraphs"] as IList;
-            int indexP = Random.Range(0, paragraphs.Count);
+            int indexP = UnityEngine.Random.Range(0, paragraphs.Count);
             sPassage = paragraphs[indexP].ToString();
         }
         return sPassage;
@@ -792,7 +834,7 @@ public class Manager_Book : MonoBehaviour
     public void GetAndShowNewPassage()
     {
         string msgPassage = this.GetPassage();
-        if(msgPassage!="") bible.carrot.Show_msg("Bible passage",msgPassage);
+        if(msgPassage!="") bible.carrot.Show_msg(bible.carrot.L("bible_passage","Bible passage"),msgPassage);
     }
 
 }

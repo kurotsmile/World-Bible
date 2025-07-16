@@ -27,6 +27,8 @@ public class Bible : MonoBehaviour
     public GameObject prefab_paragraph_item_zh;
 
     [Header("Ui")]
+    public Text TxtValCountOldBible;
+    public Text TxtValCountNewBible;
     public Text txtPassage;
     public GameObject panelHome;
     public GameObject panelMain;
@@ -46,6 +48,8 @@ public class Bible : MonoBehaviour
     public Sprite icon_speech;
     public Sprite icon_up;
     public Sprite icon_down;
+    public Sprite icon_history;
+
 
     [Header("Sound")]
     public AudioClip sound_click_clip;
@@ -232,6 +236,8 @@ public class Bible : MonoBehaviour
         this.panelHome.SetActive(true);
         this.panelMain.SetActive(false);
         this.txtPassage.text = this.book.GetPassage();
+        this.TxtValCountNewBible.text = this.book.GetLengthBibleByType("new_testament").ToString()+" "+carrot.L("book","Book");
+        this.TxtValCountOldBible.text = this.book.GetLengthBibleByType("old_testament").ToString()+" "+carrot.L("book","Book");
     }
 
     public void BtnShowNewPassage()
@@ -244,11 +250,13 @@ public class Bible : MonoBehaviour
     {
         carrot.play_sound_click();
         ShowListBook("new_testament");
+        menu.Select_Menu_No_func(1);
     }
 
     public void BtnShowBibleOld()
     {
         carrot.play_sound_click();
         ShowListBook("old_testament");
+        menu.Select_Menu_No_func(1);
     }
 }

@@ -12,12 +12,14 @@ public class Book_Offline : MonoBehaviour
     public Sprite icon_offline_book;
 
     private int length = 0;
+    private int lengthHistory = 0;
     private int index_del = -1;
     private Carrot_Window_Msg msg;
 
     public void On_load()
     {
         this.length = PlayerPrefs.GetInt("length_book", 0);
+        this.lengthHistory = PlayerPrefs.GetInt("lengthHistory", 0);
     }
 
     public void Add(IDictionary data)
@@ -25,7 +27,7 @@ public class Book_Offline : MonoBehaviour
         PlayerPrefs.SetString("book_" + this.length, Json.Serialize(data));
         this.length++;
         PlayerPrefs.SetInt("length_book", this.length);
-        this.msg=this.bible.carrot.Show_msg(this.bible.carrot.L("save","Storage"),this.bible.carrot.L("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
+        this.msg = this.bible.carrot.Show_msg(this.bible.carrot.L("save", "Storage"), this.bible.carrot.L("save_success", "Save the book successfully, you can read it in offline mode!"), Carrot.Msg_Icon.Success);
     }
 
     public void show()
@@ -48,20 +50,20 @@ public class Book_Offline : MonoBehaviour
                 if (s_data_book != "")
                 {
                     var index_item = i;
-                    IDictionary data = (IDictionary) Carrot.Json.Deserialize(s_data_book);
+                    IDictionary data = (IDictionary)Carrot.Json.Deserialize(s_data_book);
                     data["index"] = i;
-                    data["type_item"]="offline";
-                    Carrot.Carrot_Box_Item item_book=this.bible.Create_item();
+                    data["type_item"] = "offline";
+                    Carrot.Carrot_Box_Item item_book = this.bible.Create_item();
                     item_book.set_icon(this.icon_offline_book);
                     item_book.set_title(data["name"].ToString());
 
                     if (data["contents"] != null)
                     {
-                        IList contents = (IList) data["contents"];
+                        IList contents = (IList)data["contents"];
                         item_book.set_tip(contents.Count + " Chapter");
                     }
 
-                    Carrot.Carrot_Box_Btn_Item btn_del=item_book.create_item();
+                    Carrot.Carrot_Box_Btn_Item btn_del = item_book.create_item();
                     btn_del.set_icon(this.bible.carrot.sp_icon_del_data);
                     btn_del.set_color(this.bible.carrot.color_highlight);
                     btn_del.set_act(() => delete(index_item));
@@ -90,18 +92,31 @@ public class Book_Offline : MonoBehaviour
     public void delete(int index)
     {
         this.index_del = index;
-        this.msg=this.bible.carrot.Show_msg("Delete", "Are you sure you want to remove this item?", this.delete_yes, this.delete_no);
+        this.msg = this.bible.carrot.Show_msg("Delete", "Are you sure you want to remove this item?",()=>
+        {
+            PlayerPrefs.DeleteKey("book_" + this.index_del);
+            if (this.msg != null) this.msg.close();
+            this.list();
+        });
     }
 
-    private void delete_yes()
+    public void AddHistory(IDictionary data)
     {
-        PlayerPrefs.DeleteKey("book_" + this.index_del);
-        if (this.msg != null) this.msg.close();
-        this.list();
+        PlayerPrefs.SetString("h_" + this.lengthHistory, Json.Serialize(data));
+        this.lengthHistory++;
+        PlayerPrefs.SetInt("lengthHistory", lengthHistory);
     }
 
-    private void delete_no()
+    public void ShowListHistory()
     {
-        if (this.msg != null) this.msg.close();
+        bible.carrot.play_sound_click();
+        Carrot_Box boxHistory = bible.carrot.Create_Box();
+        boxHistory.set_icon(bible.icon_history);
+        boxHistory.set_title("Recently Read");
+
+        for (int i = 0; i < lengthHistory; i++)
+        {
+            
+        }
     }
 }

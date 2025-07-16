@@ -14,13 +14,15 @@ public class Manager_Search : MonoBehaviour
     public void show_search()
     {
         this.bible.ads.show_ads_Interstitial();
-        this.window_search_obj=this.bible.carrot.show_search(Submit_search, this.bible.carrot.L("search_tip", "You can search for any biblical content here!"));
+        this.window_search_obj = this.bible.carrot.show_search(Submit_search, this.bible.carrot.L("search_tip", "You can search for any biblical content here!"));
     }
 
     public void list()
     {
+        bible.panelHome.SetActive(false);
+        bible.panelMain.SetActive(true);
         this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
-        Carrot.Carrot_Box_Item item_inp_search=this.bible.Create_item();
+        Carrot.Carrot_Box_Item item_inp_search = this.bible.Create_item();
         item_inp_search.set_icon(this.bible.icon_search);
         item_inp_search.set_type(Carrot.Box_Item_Type.box_value_input);
         item_inp_search.check_type();
@@ -32,80 +34,63 @@ public class Manager_Search : MonoBehaviour
 
     private void Submit_search(string s_key)
     {
-        this.bible.Add_loading_item();
-        string s_data = PlayerPrefs.GetString("data_bible_" +bible.carrot.lang.Get_key_lang());
-        if (s_data != "")
+
+        if (this.window_search_obj != null) this.window_search_obj.close();
+        this.bible.menu.Select_Menu_No_func(2);
+        this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
+        Carrot_Box_Item item_search_results = bible.Create_item();
+        item_search_results.set_icon(bible.icon_search);
+        item_search_results.set_title(this.bible.carrot.L("search_results", "Search Results"));
+        item_search_results.set_tip(s_key);
+
+        Carrot_Box_Btn_Item btn_clear = item_search_results.create_item();
+        btn_clear.set_icon(bible.carrot.sp_icon_del_data);
+        btn_clear.set_icon_color(Color.white);
+        btn_clear.set_color(bible.carrot.color_highlight);
+        btn_clear.set_act(() => this.list());
+
+        int count_found = 0;
+
+        for (int i = 0; i < bible.book.list_data_Bible.Count; i++)
         {
-            Fire_Collection fc = new(s_data);
-            if (!fc.is_null)
+            IDictionary data = bible.book.list_data_Bible[i] as IDictionary;
+            if (data["name"].ToString().Contains(s_key))
             {
-                if (this.window_search_obj != null) this.window_search_obj.close();
-                this.bible.menu.Select_Menu_No_func(2);
-                this.bible.carrot.clear_contain(this.bible.tr_all_item_book);
-                Carrot_Box_Item item_search_results = bible.Create_item();
-                item_search_results.set_icon(bible.icon_search);
-                item_search_results.set_title(this.bible.carrot.L("search_results","Search Results"));
-                item_search_results.set_tip(s_key);
+                data["title"] = data["name"].ToString();
+                data["tip"] = this.bible.carrot.L("book", "Book") + " (" + data["name"].ToString() + ")";
+                data["type_search"] = "book";
+                this.Add_item_search(data);
+                count_found++;
+            }
 
-                Carrot_Box_Btn_Item btn_clear = item_search_results.create_item();
-                btn_clear.set_icon(bible.carrot.sp_icon_del_data);
-                btn_clear.set_icon_color(Color.white);
-                btn_clear.set_color(bible.carrot.color_highlight);
-                btn_clear.set_act(() => this.list());
-
-                int count_found = 0;
-
-                for (int i = 0; i < fc.fire_document.Length; i++)
+            IList contents = (IList)data["contents"];
+            for (int y = 0; y < contents.Count; y++)
+            {
+                IDictionary chapter = (IDictionary)contents[y];
+                chapter["index"] = y;
+                IList paragraphs = (IList)chapter["paragraphs"];
+                for (int z = 0; z < paragraphs.Count; z++)
                 {
-                    IDictionary data = fc.fire_document[i].Get_IDictionary();
-                    if (data["name"].ToString().Contains(s_key))
+                    if (paragraphs[z].ToString().Contains(s_key))
                     {
-                        data["title"] = data["name"].ToString();
-                        data["tip"] = this.bible.carrot.L("book", "Book")+" (" + data["name"].ToString() + ")";
-                        data["type_search"] = "book";
+                        data["title"] = paragraphs[z].ToString();
+                        data["tip"] = this.bible.carrot.L("book", "Book") + " (" + data["name"].ToString() + ") -> " + this.bible.carrot.L("chapter", "Chapter") + " : " + (y + 1) + " -> " + this.bible.carrot.L("paragraph", "Paragraph") + " (" + (z + 1) + ")";
+                        data["type_search"] = "paragraph";
+                        data["data_chapter"] = chapter;
                         this.Add_item_search(data);
                         count_found++;
                     }
-
-                    IList contents = (IList)data["contents"];
-                    for (int y = 0; y < contents.Count; y++)
-                    {
-                        IDictionary chapter = (IDictionary)contents[y];
-                        chapter["index"] = y;
-                        IList paragraphs = (IList)chapter["paragraphs"];
-                        for (int z = 0; z < paragraphs.Count; z++)
-                        {
-                            if (paragraphs[z].ToString().Contains(s_key))
-                            {
-                                data["title"] = paragraphs[z].ToString();
-                                data["tip"] = this.bible.carrot.L("book","Book")+" ("+data["name"].ToString()+") -> "+this.bible.carrot.L("chapter", "Chapter")+" : "+(y+1)+" -> "+ this.bible.carrot.L("paragraph", "Paragraph")+" ("+ (z+1)+")";
-                                data["type_search"] = "paragraph";
-                                data["data_chapter"] = chapter;
-                                this.Add_item_search(data);
-                                count_found++;
-                            }
-                        }
-                    }
                 }
-
-                if (count_found == 0)
-                {
-                    bible.add_none();
-                }
-                else
-                {
-                    item_search_results.set_tip(s_key+" ("+count_found+")");
-                }
-                
             }
-            else
-            {
-                bible.carrot.Show_msg("No data");
-            }
+        }
+
+        if (count_found == 0)
+        {
+            bible.add_none();
         }
         else
         {
-            bible.carrot.Show_msg("No data");
+            item_search_results.set_tip(s_key + " (" + count_found + ")");
         }
     }
 
@@ -126,11 +111,11 @@ public class Manager_Search : MonoBehaviour
 
         if (s_type_book == "book")
         {
-            item_book.set_act(() => bible.book.View(data,-1));
+            item_book.set_act(() => bible.book.View(data, -1));
         }
         else
         {
-            IDictionary data_paragraphs=(IDictionary)data["data_chapter"];
+            IDictionary data_paragraphs = (IDictionary)data["data_chapter"];
             bible.book.Set_data_book_cur(data);
             item_book.set_act(() => bible.book.View_paragraphs_page(data_paragraphs));
         }
@@ -141,6 +126,29 @@ public class Manager_Search : MonoBehaviour
         btn_save.set_icon_color(Color.white);
         btn_save.set_color(bible.carrot.color_highlight);
         btn_save.set_act(() => bible.offline.Add(data));
+    }
 
+    public IList SearchData(IList list, string keySearch)
+    {
+        var result = new ArrayList();
+        if (string.IsNullOrEmpty(keySearch) || list == null) return result;
+
+        keySearch = keySearch.ToLower();
+
+        foreach (var item in list)
+        {
+            if (item is IDictionary dict)
+            {
+                foreach (var value in dict.Values)
+                {
+                    if (value != null && value.ToString().ToLower().Contains(keySearch))
+                    {
+                        result.Add(dict);
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

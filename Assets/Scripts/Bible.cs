@@ -28,10 +28,14 @@ public class Bible : MonoBehaviour
     public GameObject prefab_paragraph_item_zh;
 
     [Header("Ui")]
-    public Text TxtValCountOldBible;
-    public Text TxtValCountNewBible;
-    public Text txtPassage;
-    public Text txtPassageLocation;
+    public Text TxtValCountOldBible_p;
+    public Text TxtValCountNewBible_p;
+    public Text txtPassage_p;
+    public Text txtPassageLocation_p;
+    public Text TxtValCountOldBible_l;
+    public Text TxtValCountNewBible_l;
+    public Text txtPassage_l;
+    public Text txtPassageLocation_l;
     public GameObject panelHome;
     public GameObject panelMain;
 
@@ -239,16 +243,20 @@ public class Bible : MonoBehaviour
         this.panelHome.SetActive(true);
         this.panelMain.SetActive(false);
         IDictionary dataPassage = this.book.GetPassage();
-        txtPassage.text = dataPassage["text"].ToString();
-        txtPassageLocation.text = dataPassage["location"].ToString();
+        txtPassage_l.text = dataPassage["text"].ToString();
+        txtPassage_p.text = dataPassage["text"].ToString();
+        txtPassageLocation_l.text = dataPassage["location"].ToString();
+        txtPassageLocation_p.text = dataPassage["location"].ToString();
         actClickPassage = () =>
         {
-            int indexBook=int.Parse(dataPassage["indexBook"].ToString());
-            int indexContent=int.Parse(dataPassage["indexContent"].ToString());
-            book.View_paragraphs_list(indexBook,indexContent);
+            int indexBook = int.Parse(dataPassage["indexBook"].ToString());
+            int indexContent = int.Parse(dataPassage["indexContent"].ToString());
+            book.View_paragraphs_list(indexBook, indexContent);
         };
-        this.TxtValCountNewBible.text = this.book.GetLengthBibleByType("new_testament").ToString()+" "+carrot.L("book","Book");
-        this.TxtValCountOldBible.text = this.book.GetLengthBibleByType("old_testament").ToString()+" "+carrot.L("book","Book");
+        this.TxtValCountNewBible_p.text = this.book.GetLengthBibleByType("new_testament").ToString() + " " + carrot.L("book", "Book");
+        this.TxtValCountNewBible_l.text = this.book.GetLengthBibleByType("new_testament").ToString() + " " + carrot.L("book", "Book");
+        this.TxtValCountOldBible_p.text = this.book.GetLengthBibleByType("old_testament").ToString() + " " + carrot.L("book", "Book");
+        this.TxtValCountOldBible_l.text = this.book.GetLengthBibleByType("old_testament").ToString()+" "+carrot.L("book","Book");
     }
 
     public void BtnShowInfoPassage()

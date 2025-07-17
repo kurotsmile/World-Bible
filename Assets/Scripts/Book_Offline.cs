@@ -112,7 +112,7 @@ public class Book_Offline : MonoBehaviour
         bible.carrot.play_sound_click();
         Carrot_Box boxHistory = bible.carrot.Create_Box();
         boxHistory.set_icon(bible.icon_history);
-        boxHistory.set_title("Recently Read");
+        boxHistory.set_title(bible.carrot.L("reading_history","Recently Read"));
 
         boxHistory.create_btn_menu_header(bible.carrot.sp_icon_del_data).set_act(() =>
         {

@@ -843,13 +843,14 @@ public class Manager_Book : MonoBehaviour
             indexBook = UnityEngine.Random.Range(0, this.list_data_Bible.Count);
             IDictionary dataBook = list_data_Bible[indexBook] as IDictionary;
             IList listContents = dataBook["contents"] as IList;
-            indexContent= UnityEngine.Random.Range(0, listContents.Count);
+            indexContent = UnityEngine.Random.Range(0, listContents.Count);
             IDictionary cContent = listContents[indexContent] as IDictionary;
             IList paragraphs = cContent["paragraphs"] as IList;
             int indexP = UnityEngine.Random.Range(0, paragraphs.Count);
             sPassage = paragraphs[indexP].ToString();
             sLocation += dataBook["name"].ToString() + " - " + (indexContent + 1) + "," + (indexP + 1);
-            bible.txtPassageLocation.text = sLocation;
+            bible.txtPassageLocation_l.text = sLocation;
+            bible.txtPassageLocation_p.text = sLocation;
         }
         Passage["text"] = sPassage;
         Passage["location"] = sLocation;
@@ -864,8 +865,10 @@ public class Manager_Book : MonoBehaviour
         string msgPassage = dataPassage["text"].ToString();
         msgPassage += "\n\n" + dataPassage["location"].ToString();
         if (msgPassage != "") bible.carrot.Show_msg(bible.carrot.L("bible_passage", "Bible passage"), msgPassage);
-        bible.txtPassage.text = dataPassage["text"].ToString();
-        bible.txtPassageLocation.text=dataPassage["location"].ToString();
+        bible.txtPassage_l.text = dataPassage["text"].ToString();
+        bible.txtPassage_p.text = dataPassage["text"].ToString();
+        bible.txtPassageLocation_l.text = dataPassage["location"].ToString();
+        bible.txtPassageLocation_p.text=dataPassage["location"].ToString();
     }
 
 }

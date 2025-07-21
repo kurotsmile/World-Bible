@@ -286,6 +286,7 @@ public class Manager_Book : MonoBehaviour
                 }
                 this.bible.carrot.play_sound_click();
                 this.isChange = true;
+                 bible.carrot.delay_function(1.2f, () => this.BoxChapterView.UI.scrollRect.verticalNormalizedPosition = 0f);
             });
 
             this.BoxChapterView.set_act_before_closing(() =>
@@ -361,7 +362,7 @@ public class Manager_Book : MonoBehaviour
                     btn_del.set_color(Color.red);
                     btn_del.set_act(() =>
                     {
-                        this.BoxMsg = this.bible.carrot.Show_msg("Delete Chapter", "Are you sure you want to delete this '" + index_p + "' chapter?", () =>
+                        this.BoxMsg = this.bible.carrot.Show_msg("Delete Chapter", "Are you sure you want to delete this '" + (index_p+1) + "' chapter?", () =>
                         {
                             contents.RemoveAt(index_p);
                             this.isChange = true;
@@ -475,23 +476,20 @@ public class Manager_Book : MonoBehaviour
             });
         });
 
-        
-        box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_write).set_act(() =>
+        box_paragraphs.create_btn_menu_header(this.bible.carrot.icon_carrot_write,false).set_act(() =>
         {
-            Carrot_Window_Input inp=bible.carrot.Show_input("Text", "Enter Content");
+            Carrot_Window_Input inp=bible.carrot.Show_input("Create Data by json", "Enter Content json");
             inp.set_act_done(sText =>
             {
-                var matches = Regex.Matches(sText, @"(?<id>\d+)(?<text>\p{L}[\s\S]*?)(?=\d+\p{L}|$)");
-                foreach (Match match in matches)
+                IList listC = Json.Deserialize(inp.get_val()) as IList;
+                for(int i=0;i<listC.Count;i++)
                 {
-                    string text = match.Groups["text"].Value.Trim();
-                    string indexC = match.Groups["id"].Value;
                     Carrot_Box_Item item_p_new = box_paragraphs.create_item();
                     item_p_new.set_icon(this.bible.icon_chapter);
                     item_p_new.set_type(Box_Item_Type.box_value_input);
-                    item_p_new.set_title("Paragraph " + indexC);
+                    item_p_new.set_title("Paragraph " + (i+1));
                     item_p_new.set_tip("New Paragraph");
-                    item_p_new.set_val(text);
+                    item_p_new.set_val(listC[i].ToString());
                     this.AddBtnDelParagraphItem(item_p_new);
                 }
                 inp.close();

@@ -121,11 +121,13 @@ public class Book_Offline : MonoBehaviour
             boxHistory.close();
         });
 
+        int count_item = 0;
         for (int i = (lengthHistory - 1); i >= 0; i--)
         {
             string sData = PlayerPrefs.GetString("h_" + i, "");
             if (sData != "")
             {
+                if (count_item >= 20) break;
                 IDictionary dataH = Json.Deserialize(sData) as IDictionary;
                 Carrot_Box_Item itemHistory = boxHistory.create_item();
                 itemHistory.set_icon(bible.icon_history_item);
@@ -136,6 +138,7 @@ public class Book_Offline : MonoBehaviour
                     int indexBook = int.Parse(dataH["index"].ToString());
                     bible.book.View(bible.book.list_data_Bible[indexBook] as IDictionary, indexBook);
                 });
+                count_item++;
             }
         }
     }

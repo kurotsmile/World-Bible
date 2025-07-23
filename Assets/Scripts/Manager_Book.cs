@@ -45,7 +45,8 @@ public class Manager_Book : MonoBehaviour
             this.is_editor = false;
         }
 
-        string PathFileData = this.GetPathData() + "/bible-" + bible.carrot.lang.Get_key_lang() + ".json";
+       
+        string PathFileData = this.GetPathData() + "/bible_" + bible.carrot.lang.Get_key_lang() + ".json";
         if (IsEditor())
         {
             if (FileBrowserHelpers.FileExists(PathFileData))
@@ -61,6 +62,7 @@ public class Manager_Book : MonoBehaviour
                 else
                     Load_list_by_data(bible_data_text.text);
             }
+            Debug.Log("Path data Lang: " +PathFileData);
         }
         else
         {
@@ -819,7 +821,7 @@ public class Manager_Book : MonoBehaviour
 
     public void UpdateDataFile()
     {
-        FileBrowserHelpers.WriteTextToFile(System.IO.Path.Combine(this.s_path_data, "bible-" + this.bible.carrot.lang.Get_key_lang() + ".json"), Json.Serialize(this.list_data_Bible));
+        FileBrowserHelpers.WriteTextToFile(System.IO.Path.Combine(this.s_path_data, "bible_" + this.bible.carrot.lang.Get_key_lang() + ".json"), Json.Serialize(this.list_data_Bible));
     }
 
     public void DeleteEbook(int index)

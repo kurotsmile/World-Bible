@@ -222,7 +222,7 @@ public class Bible : MonoBehaviour
                 item_path.set_val(s_path[0]);
                 PlayerPrefs.SetString("path_data", s_path[0]);
 
-                string s_path_file = System.IO.Path.Combine(s_path[0], "bible-" + this.carrot.lang.Get_key_lang() + ".json");
+                string s_path_file = System.IO.Path.Combine(s_path[0], "bible_" + this.carrot.lang.Get_key_lang() + ".json");
                 if (FileBrowserHelpers.FileExists(s_path_file))
                 {
                     string s_data = FileBrowserHelpers.ReadTextFromFile(s_path_file);

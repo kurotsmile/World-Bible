@@ -2546,7 +2546,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2009800428}
   m_HandleRect: {fileID: 2009800427}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4240,7 +4240,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 95.9}
+  m_AnchoredPosition: {x: 0, y: 95.899994}
   m_SizeDelta: {x: -30, y: 97.5}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1026872775
@@ -4552,7 +4552,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1082950572}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -4560,13 +4560,15 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 120, y: 95}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
 --- !u!1 &1132984351
 GameObject:
   m_ObjectHideFlags: 0
@@ -5892,6 +5894,8 @@ MonoBehaviour:
   - bible_passage_tip
   - reading_history
   - reading_history_tip
+  - reading_history
+  - reading_history_tip
   emp:
   - {fileID: 552070384}
   - {fileID: 387769301}
@@ -5906,6 +5910,8 @@ MonoBehaviour:
   - {fileID: 1940924899}
   - {fileID: 1943209171}
   - {fileID: 1944372403}
+  - {fileID: 1757647775}
+  - {fileID: 1065215271}
   List_img_change_icon_lang:
   - {fileID: 489169906}
   - {fileID: 472858802}

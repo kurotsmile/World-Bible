@@ -108,7 +108,7 @@ PlayerSettings:
   xboxEnableFitness: 0
   visibleInBackground: 1
   allowFullscreenSwitch: 1
-  fullscreenMode: 3
+  fullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
@@ -524,6 +524,9 @@ PlayerSettings:
   - m_BuildTarget: iOSSupport
     m_APIs: 10000000
     m_Automatic: 1
+  - m_BuildTarget: MetroSupport
+    m_APIs: 02000000
+    m_Automatic: 0
   m_BuildTargetVRSettings: []
   m_DefaultShaderChunkSizeInMB: 16
   m_DefaultShaderChunkCount: 0
@@ -812,6 +815,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     Android: LEVELPLAY_DEPENDENCIES_INSTALLED
     Standalone: LEVELPLAY_DEPENDENCIES_INSTALLED
+    Windows Store Apps: LEVELPLAY_DEPENDENCIES_INSTALLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -852,10 +856,10 @@ PlayerSettings:
   metroPackageName: BibleBuiltInRenderer
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
-  metroCertificatePassword: 
+  metroCertificatePassword: '>4<5=55?'
   metroCertificateSubject: Carrot Store
   metroCertificateIssuer: Carrot Store
-  metroCertificateNotAfter: 80b71372a66fda01
+  metroCertificateNotAfter: 804301772e1bdd01
   metroApplicationDescription: Bible_BuiltInRenderer
   wsaImages: {}
   metroTileShortName: Kinh Thanh
@@ -877,7 +881,12 @@ PlayerSettings:
       InternetClientServer: True
       InternetClient: True
       WebCam: True
-  metroTargetDeviceFamilies: {}
+  metroTargetDeviceFamilies:
+    Desktop: True
+    Holographic: True
+    Mobile: True
+    Team: True
+    Xbox: True
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: bible

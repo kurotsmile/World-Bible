@@ -4,3 +4,6 @@
 [submodule "Assets/Carrot-File"]
 	path = Assets/Carrot-File
 	url = https://github.com/kurotsmile/Carrot-File.git
+[submodule "Assets/Carrot-Ads"]
+	path = Assets/Carrot-Ads
+	url = https://github.com/kurotsmile/Carrot-Ads.git

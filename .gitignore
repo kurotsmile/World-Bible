@@ -84,3 +84,5 @@ crashlytics-build.properties
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
 /Assets/ExternalDependencyManager
+.DS_Store
+Assets/LevelPlay

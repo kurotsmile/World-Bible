@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="SimpleFileBrowser.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+</Solution>

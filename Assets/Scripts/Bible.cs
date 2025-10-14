@@ -191,6 +191,7 @@ public class Bible : MonoBehaviour
 
     public void show_search()
     {
+        ads.show_ads_Interstitial();
         search.show_search();
     }
 

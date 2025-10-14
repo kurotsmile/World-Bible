@@ -654,6 +654,7 @@ public class Manager_Book : MonoBehaviour
 
     private Carrot.Carrot_Box Box_view(string s_title)
     {
+        bible.ads.show_ads_Interstitial();
         if (box_paragraphs_view != null) box_paragraphs_view.close();
         box_paragraphs_view = bible.carrot.Create_Box();
         box_paragraphs_view.set_icon_white(bible.icon_chapter);
